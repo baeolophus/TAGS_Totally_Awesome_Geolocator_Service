@@ -33,11 +33,7 @@ source("global.R")
 shinyModuleUserInterface <- function(id, label) {
   # all IDs of UI functions need to be wrapped in ns()
   ns <- NS(id)
-  # showcase to access a file ('auxiliary files') that is 
-  # a) provided by the app-developer and 
-  # b) can be overridden by the workflow user.
-  fileName <- getAuxiliaryFilePath("auxiliary-file-a")
- 
+
    tagList(
      titlePanel(
        "Totally Awesome Geolocator Service",
@@ -48,7 +44,8 @@ shinyModuleUserInterface <- function(id, label) {
        sidebarPanel(
          
          h3("Step 1. Select your file"),
-         p("File upload limit of 30 mb; please run the app on your own machine if you have larger datasets."),
+         # delete this, it was a Shiny Server limit
+         # p("File upload limit of 30 mb; please run the app on your own machine if you have larger datasets."),
          tags$a(href="https://github.com/baeolophus/TAGS_shiny_version",
                 "Get the TAGS app code here."),
          br(),
@@ -812,5 +809,8 @@ shinyModule <- function(input, output, session, data) {
   ##--## end of example ##--##
   
   # data must be returned. Either the unmodified input data, or the modified data by the app
-  return(reactive({ current() }))
+  return(reactive({ current() }))  
+  # return(reactive({ modifiedData() }))  # I think I  need this one?  do I put the object inside ()?
+  
+  
 }
