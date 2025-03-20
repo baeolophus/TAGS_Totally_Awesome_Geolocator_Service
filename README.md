@@ -55,13 +55,16 @@ These values result in a calculated sun angle of -3.42629187230021.  <a href="ht
  
  ![Step 2 completed; values are latitude 44.655523, longitude -84.647636, and dates 2014-06-13 to 2014-07-29.  These result in a calculated sun angle of -3.42629187230021.](Step2_screenshot.PNG?raw=true "ShinyApps TAGS screen after Step 2 completed.") 
  
- ## Step 3. Light threshold entry
- The default light threshold value is 5.5.  We will leave this value as-is.  For information on editing this value, and values that give errors, read <a href="https://github.com/baeolophus/TAGS_shiny_version#step-3-light-threshold-entry-1">the documentation for Step 3</a>.
+## Step 3. Light threshold entry
+
+The default light threshold value is 5.5.  We will leave this value as-is.  For information on editing this value, and values that give errors, read <a href="https://github.com/baeolophus/TAGS_shiny_version#step-3-light-threshold-entry-1">the documentation for Step 3</a>.
  
- ## Step 4. Optional: change value for finding problem areas
-The default threshold for detecting problem areas in light data is 5 hours.  We will leave this value as-is.  For information on editing this value, read <a href="https://github.com/baeolophus/TAGS_shiny_version/blob/main/README.md#step-4-optional-change-value-for-finding-problem-areas-1">the documentation for Step 4</a>.
+## Step 4. Optional: change value for finding problem areas
+
+The default threshold for detecting problem areas in light data is 5 hours.  We will leave this value as-is.  For information on editing this value, read <a href="https://github.com/baeolophus/TAGS_shiny_version/blob/main/README.md#step-4-optional-change-value-for-finding-problem-areas-1">the details of functionality for Step 4</a>.
  
- ## Step 5. Find problem areas and edit your data
+## Step 5. Find problem areas and edit your data
+
 To determine if the problem highlighter "red box" is working correctly, examine the example file.  The example .lig is easier to edit if we adjust the window length to 1.
 
 ![Step 5 first change is moving Editing Window Length from default value of 2 to 1, keeping units as days.](Step5_screenshot1.PNG?raw=true "ShinyApps TAGS screen during adjusting Step 5 values; first change of setting editing window length value to 1.") 
@@ -103,7 +106,7 @@ TAGS works with generic .csv data containing no headers or one header row, as we
  The default light threshold is 5.5 and can be changed in increments of 0.1 with the arrows on the right side of the box.  Be sure to enter a value within the range of your data. For example, if the values of light in your dataset range from 40 to 200, you will need to increase the light threshold to a value between 40 and 200.
  
 ## Step 4. Optional: change value for finding problem areas
-TAGS is designed to highlight potential false twilights (from shade, artificial lighting, etc).  This value is how TAGS chooses potential problem twilights to highlight visually in red in Step 5.  Thus, the problem threshold value should reflect what you view as the smallest possible time you might go from light to dark or vice versa naturally.  The default value 5 hours. The steps are in increments of 1 hour, and the values allowed are 0 hrs to 24 hrs.  Five hours is usually suitable for most regions.  Changing the value will **not** erase your previous selections for excluded points, so you can experiment if you wish to highlight further potential problems without losing existing edits.
+TAGS is designed to highlight potential false twilights (from shade, artificial lighting, etc).  This value is how TAGS chooses potential problem twilights to highlight visually in red in Step 5.  Thus, the problem threshold value should reflect what you view as the smallest possible time you might go from light to dark or vice versa naturally.  The default value is 5 hours. The steps are in increments of 1 hour, and the values allowed are 0 hrs to 24 hrs.  Five hours is usually suitable for most regions.  Changing the value will **not** erase your previous selections for excluded points, so you can experiment if you wish to highlight further potential problems without losing existing edits.
  
 ## Step 5. Find problem areas and edit your data
 This step contains two plots (generated with ggplot2).  The first plot shows shows all of your data with problem areas highlighted in red boxes and the location of the editing window shown in gray.  (An error may show briefly on the overall data view plot, but the plot is still loading as long as the loading indicator returns.)
