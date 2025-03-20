@@ -41,7 +41,7 @@ The manual cleaning and annotating created by TAGS is expected to be used <a hre
 
 ## Step 1. Select your file
 The example screenshots in this section are generated with the sample file <a href="/data/GL36_000.lig">GL36_000.lig</a> (<a href="http://dx.doi.org/10.5441/001/1.h2b30454">Cooper et al. 2017a, b</a>). Once the blue "loading" bar below the "Browse for your file" secondary header says "Upload complete", then a figure appears under <a href=https://github.com/baeolophus/TAGS_shiny_version#step-2-calibration-period-information>Step 5</a>. An error may show briefly under Step 5, but the plot is still loading as long as the loading indicator (three vertical blue bars) returns. Once the file is uploaded, the column headers are renamed to "datetime" and "light", so the appearance of TAGS column headers will be the same for any files. Then, proceed to <a href="https://github.com/baeolophus/TAGS_shiny_version#step-2-calibration-period-information">Step 2</a>.
-![Step 1 completed; the "loading" bar is filled with blue stripes and text that says "upload complete" and a line graph of all the data appears under the Step 5 header.](Step1_screenshot.PNG?raw=true "ShinyApps TAGS screen after Step 1 completed.")
+![Step 1 completed; the "loading" bar is filled with blue stripes and text that says "upload complete" and a line graph of all the data appears under the Step 5 header.](doc/Step1_screenshot.PNG?raw=true "ShinyApps TAGS screen after Step 1 completed.")
 
   
 ## Step 2. Calibration period information
@@ -53,7 +53,7 @@ For the .lig example file, enter sample values (from Cooper et al. (2015)'s <a h
 
 These values result in a calculated sun angle of -3.42629187230021.  <a href="https://github.com/baeolophus/TAGS_shiny_version/issues/7">Known bug</a>: if you click "calculate sun angle from data" before entering values, the app will crash.
  
- ![Step 2 completed; values are latitude 44.655523, longitude -84.647636, and dates 2014-06-13 to 2014-07-29.  These result in a calculated sun angle of -3.42629187230021.](Step2_screenshot.PNG?raw=true "ShinyApps TAGS screen after Step 2 completed.") 
+ ![Step 2 completed; values are latitude 44.655523, longitude -84.647636, and dates 2014-06-13 to 2014-07-29.  These result in a calculated sun angle of -3.42629187230021.](doc/Step2_screenshot.PNG?raw=true "ShinyApps TAGS screen after Step 2 completed.") 
  
 ## Step 3. Light threshold entry
 
@@ -70,22 +70,22 @@ To determine if the problem highlighter "red box" is working correctly, examine 
 ![Step 5 first change is moving Editing Window Length from default value of 2 to 1, keeping units as days.](Step5_screenshot1.PNG?raw=true "ShinyApps TAGS screen during adjusting Step 5 values; first change of setting editing window length value to 1.") 
 
  With default values for finding problem areas and the window length at 1, we can see a problem area exists from 2014-06-07T11:32:36Z to 2014-06-07T15:14:36Z (rows 351-462).  Using the mouse cursor to click and drag, set the area to toggle points in and out of exclusion.
-![Step 5 scroll down to edit window](Step5_screenshot2.PNG?raw=true "ShinyApps TAGS screen scrolling down through Step 5 to see editing window") 
+![Step 5 scroll down to edit window](doc/Step5_screenshot2.PNG?raw=true "ShinyApps TAGS screen scrolling down through Step 5 to see editing window") 
 
 Once the points are selected (the rectangular box will stay in the plot window), click "Toggle Selected Points".  The points, previously filled with black, become empty circles.
-![Step 5 editing window with problem light levels excluded (the points have become unfilled).](Step5_screenshot3.PNG?raw=true "Step 5 editing window with problem light levels excluded (the points have become unfilled).") 
+![Step 5 editing window with problem light levels excluded (the points have become unfilled).](doc/Step5_screenshot3.PNG?raw=true "Step 5 editing window with problem light levels excluded (the points have become unfilled).") 
 
 Below the editing window plot, scroll down to see all of the buttons.  Clicking "Show/refresh edited values" will generate a table of points that have been excluded.
-![Step 5 table (below editing window) with problem light levels excluded.](Step5_screenshot4.PNG?raw=true "Step 5 table (below editing window) with problem light levels excluded") 
+![Step 5 table (below editing window) with problem light levels excluded.](doc/Step5_screenshot4.PNG?raw=true "Step 5 table (below editing window) with problem light levels excluded") 
 
 ## Step 6. Generate coordinates
 Step 6 has two parts to examine your edited coordinates.
 
 Step 6a generates location points from the edited light data.  At this step, it lets you see your edited and unedited points with datetime and lightlevel together.  You can use the "search" box in the upper right corner above the table to filter.  This screenshot shows "true" written in search, which pulls up the 99 excluded points, so you can spot check dates/times against the Step 5 plot if desired.
-![Step 6a table (below editing window and editing table) with only excluded points shown (excluded = TRUE).](Step6_screenshot1.PNG?raw=true "Step 6a table (below editing window and editing table) with only excluded points shown (excluded = TRUE)") 
+![Step 6a table (below editing window and editing table) with only excluded points shown (excluded = TRUE).](doc/Step6_screenshot1.PNG?raw=true "Step 6a table (below editing window and editing table) with only excluded points shown (excluded = TRUE)") 
 
 Step 6b takes the generated coordinates from Step 6a and plots them on a map.
-![Step 6b creates a map with geographic locations generated from the edited light level data.](Step6_screenshot2.PNG?raw=true "Step 6b creates a map with geographic locations generated from the edited light level data.") 
+![Step 6b creates a map with geographic locations generated from the edited light level data.](doc/Step6_screenshot2.PNG?raw=true "Step 6b creates a map with geographic locations generated from the edited light level data.") 
 
 
 ## Step 7. Download data
