@@ -44,7 +44,7 @@ The example screenshots in this section are generated with the sample file <a hr
 ![Step 1 completed; the "loading" bar is filled with blue stripes and text that says "upload complete" and a line graph of all the data appears under the Step 5 header.](Step1_screenshot.PNG?raw=true "ShinyApps TAGS screen after Step 1 completed.")
 
   
- ## Step 2. Calibration period information
+## Step 2. Calibration period information
 For the .lig example file, enter sample values (from Cooper et al. (2015)'s <a href="https://www.datarepository.movebank.org/bitstream/handle/10255/move.584/Cooper_Annotated_R_Code.txt?sequence=1">movebank R code</a>).
 - Calibration latitude 44.655523
 - Calibration longitude -84.647636
@@ -111,12 +111,12 @@ TAGS is designed to highlight potential false twilights (from shade, artificial 
 ## Step 5. Find problem areas and edit your data
 This step contains two plots (generated with ggplot2).  The first plot shows shows all of your data with problem areas highlighted in red boxes and the location of the editing window shown in gray.  (An error may show briefly on the overall data view plot, but the plot is still loading as long as the loading indicator returns.)
 
-The second plot is shown below window settings and is the interactive plot where you choose points to exclude.
-
 The window settings are as follows:
 - Default unit is days, but can be changed with the radio button to hours.
  - "Editing window length" is in days and defaults to a two-day window.
  - "What overlap with previous window" is in days and defaults to 1 hour (172800 seconds), which is 0.04 day.
+
+The second plot is shown below window settings and is the interactive plot where you choose points to exclude.
 
 The editing plot (the second plot in this section) can be moved in two ways: by editing window or by problem (as illustrated in the first plot).  Use the Previous and Next buttons to move to the next or previous editing window or problem twilight.  You can click individual points to toggle them from included (default) to excluded. Below the editing plot are three buttons.
 - Toggle currently selected points: clicking this button toggles the state (excluded/included) for the currently selected point or points.
