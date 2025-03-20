@@ -61,7 +61,7 @@ Other wrappers to compare to see if we meet scope:
 
 # Acknowledgements
 
-We thank Simeon Lisovski for comments on TAGS and guidance in adapting the R Geolight package; Anne Scharf and Andrea Koelzsch for help adapting the app to MoveApps; Jonah Duckles and Phil Dow for contributions to a previous version of TAGS in JavaScript; Paula Cimprich for selecting example data; and Wes Honeycutt for comments on the manuscript.
+We thank Simeon Lisovski for comments on TAGS and guidance in adapting the R Geolight package; Anne Scharf and Andrea Koelzsch for help adapting the app to MoveApps; Jonah Duckles and Phil Dow for contributions to a previous version of TAGS in JavaScript; Paula Cimprich for selecting example data; and Wes Honeycutt for comments on the manuscript. The original development of this software was supported by USDA grant number (find TODO)
 
 # References
 
