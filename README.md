@@ -46,8 +46,8 @@ The example screenshots in this section are generated with the sample file <a hr
   
 ## Step 2. Calibration period information
 For the .lig example file, enter sample values (from Cooper et al. (2015)'s <a href="https://www.datarepository.movebank.org/bitstream/handle/10255/move.584/Cooper_Annotated_R_Code.txt?sequence=1">movebank R code</a>).
-- Calibration latitude 44.655523
 - Calibration longitude -84.647636
+- Calibration latitude 44.655523
 - Calibration start date 2014-06-13
 - Calibration end date 2014-07-29
 
