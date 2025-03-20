@@ -1,7 +1,6 @@
 # TAGS, the Totally Awesome Geolocator Service
-TAGS is <a href="https://tags.shinyapps.io/tags_shiny/">a web-based service</a> that allows you to edit messy geolocator data in a point-and-click format while saving excluded values for reproducible work.  TAGS automatically suggests potential problem areas, lets you move from problem to problem to edit, and shows a map of coordinates generated from your data given your current edits.
+## Statement of need: what is TAGS?
 
-# What is TAGS?
 <a href="https://tags.shinyapps.io/tags_shiny/">TAGS, the Totally Awesome Geolocator Service</a> is an RShiny App that allows you, the researcher, to edit messy geolocator data in a point-and-click format while saving excluded values for reproducible work.  TAGS automatically suggests potential problem areas based on unexpected values (and you can change the threshold for these), lets you move from problem to problem to edit, and shows a map of coordinates generated from your data given your current edits. 
 
 # Installation instructions
@@ -97,16 +96,16 @@ Below, we explain the default and available values at each step of the TAGS proc
 ## Step 1. Select your file
 TAGS works with generic .csv data containing no headers or one header row, as well as two geolocator file types (.lig and .lux). Some .lux and .lig files may contain multiple pre-data, pre-header rows which must be removed before upload to TAGS.  TAGS works with generic .csv data containing two columns (datetime and lightlevel; the headers will be renamed in that order), as well as two geolocator file types (.lig and .lux). Column headers will be renamed to "datetime" and "light" regardless of original filetype.
   
- ## Step 2. Calibration period information
+## Step 2. Calibration period information
  Enter the latitude and longitude in decimal degrees, start date, stop date, and sun angle for the calibration period in your data file.  Date can be selected from a calendar when you click on either date box, or entered in format YYYY-MM-DD.  The values default to 0 for both latitude and longitude, the current date for both stop and start dates, and 0 for sun angle.  The arrow buttons steps up latitude and longitude in 0.00001 decimal degree increments.  The sun angle can also be calculated by clicking the button "Calculate sun angle from data" and in that case, the sun angle will appear in that same box.  If you are unsure what your calibration period location or dates are, please read <a href="https://doi.org/10.1111/1365-2656.13036">section 4.2 in Lisovski et al. 2020 "Light‐level geolocator analyses: A user's guide"</a>.
  
- ## Step 3. Light threshold entry
+## Step 3. Light threshold entry
  The default light threshold is 5.5 and can be changed in increments of 0.1 with the arrows on the right side of the box.
  
- ## Step 4. Optional: change value for finding problem areas
+## Step 4. Optional: change value for finding problem areas
 TAGS is designed to highlight potential false twilights (from shade, artificial lighting, etc).  This value is how TAGS chooses potential problem twilights to highlight visually in red in Step 5.  Thus, the problem threshold value should reflect what you view as the smallest possible time you might go from light to dark or vice versa naturally.  The default value 5 hours. The steps are in increments of 1 hour, and the values allowed are 0 hrs to 24 hrs.  Five hours is usually suitable for most regions.  Changing the value will **not** erase your previous selections for excluded points, so you can experiment if you wish to highlight further potential problems without losing existing edits.
  
- ## Step 5. Find problem areas and edit your data
+## Step 5. Find problem areas and edit your data
 This step contains two plots (generated with ggplot2).  The first plot shows shows all of your data with problem areas highlighted in red boxes and the location of the editing window shown in gray.  (An error may show briefly on the overall data view plot, but the plot is still loading as long as the loading indicator returns.)
 
 The second plot is shown below window settings and is the interactive plot where you choose points to exclude.
@@ -121,13 +120,15 @@ The editing plot (the second plot in this section) can be moved in two ways: by 
 - Reset ALL EXCLUDED POINTS: this returns all excluded points to "excluded" = FALSE.
 - Show/refresh edited values: this shows a table of the edited rows, returning the new (edited) light values.
  
- ## Step 6. Generate coordinates
+## Step 6. Generate coordinates
+
 - 6A. Generate edited twilights for coordinate calculation: this step creates lat/long coordinates in decimal degrees using the function GeoLight::coord and shows them in a table on the TAGS page.
 - 6B. Generate map from edited twilights: this step takes the coordinates from Step 6A and plots them using ggplot2.
 
 Documentation for the underlying Geolight R package is at https://github.com/slisovski/GeoLight and explains how twilights are calculated.
  
- ## Step 7. Download data
+## Step 7. Download data
+
 Data can be downloaded as a .csv file in three formats.  All three formats begin with a prefix for the download type and end with the download date appended.  
 
  - Recommended: "Download TAGS format (original data with edits and twilights)" - use this if you are taking the data to another geolocator processing software that requires a TAGS format OR if the format will be accepted by other programs.  One of the additional benefits of the TAGS format is that it documents your edits, so if the next package in your workflow will accept this format, it is a reproducible choice.  Column headers will be "datetime" (in POSIXct format in UTC), "light", "twilight", "interp" (TRUE/FALSE), and "excluded" (TRUE/FALSE)
@@ -135,13 +136,13 @@ Data can be downloaded as a .csv file in three formats.  All three formats begin
  - "Download edited twilights only" - use this if you want the twilights after editing.
 
 
-# Automated tests
-Geolocator data is cleaned visually and manually with this tool.  A map is created in step 6 to allow you to check whether points are appearing where expected relative to your animal release point.  Citations explaining the GeoLight location calculation methods are available at https://github.com/slisovski/GeoLight .  You can compare your table and map to the screenshots in the sample .lig file from "Example Use" to determine basic functionality.
-
 # Community guidelines
 **Claire is currently seeking someone to take over managing the project, so please reach out to her and Eli if you are interested in a stronger role in expanding TAGS.**
 
 To contribute to TAGS, please create a fork, demonstrate that your changes do not cause unexpected issues in other functionality, then make a pull request on GitHub. To report problems or request a new feature, please create an issue in this repository. For other questions, please contact <a href="https://libraries.ou.edu/users/claire-curry">Claire M. Curry</a>  or <a href="http://thebridgelab.oucreate.com/peeps/">Eli S. Bridge</a>.
+
+# Automated tests
+Geolocator data is cleaned visually and manually with this tool.  A map is created in step 6 to allow you to check whether points are appearing where expected relative to your animal release point.  Citations explaining the GeoLight location calculation methods are available at https://github.com/slisovski/GeoLight .  You can compare your table and map to the screenshots in the sample .lig file from "Example Use" to determine basic functionality.
 
 # Datasets cited
 Cooper NW, Hallworth MT, Marra PP (2017a) Light-level geolocation reveals wintering distribution, migration routes, and primary stopover locations of an endangered long-distance migratory songbird. Journal of Avian Biology. doi:10.1111/jav.01096 
