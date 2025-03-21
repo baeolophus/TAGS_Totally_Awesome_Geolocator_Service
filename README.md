@@ -8,6 +8,9 @@
 TAGS can be used as a browser-based RShiny app for datasets <30 megabytes (the <a href="https://github.com/baeolophus/TAGS_shiny_version/blob/main/README.md#example-usage">Example Use section</a> below has a sample file within this limit).  No installations are necessary for the web version.
 
 ## Local installation
+
+WARNING: I have not been able to use this locally as of 2025/03/20.  I believe I need to update functionality to work with newer versions of dependencies.  I apologize for the inconvenience.
+
 If you have a dataset >30 mb, please clone the code from the repository to use it on your own computer, following the installation instructions below.
 
 ```
