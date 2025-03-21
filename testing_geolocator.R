@@ -122,6 +122,17 @@ plotall <- ggplot() +
              alpha = 0.5)
 
 
+
+library(checkpoint)
+example_project <- paste0("TAGS_Totally_Awesome_Geolocator_Service", Sys.Date())
+
+rver <- getRversion()
+create_checkpoint("2023-02-28", r_version=rver, project_dir=example_project)
+use_checkpoint("2014-09-17", r_version=rver)
+
+remotes::install_github("SLisovski/GeoLight")
+
+library(GeoLight)
 #.lig version
 tbl <- read.csv("data/GL36_000.lig",
                 header = FALSE,
@@ -154,9 +165,10 @@ xy <- options[1]
 
 lig <- read.csv(infile,
                 header=T)
-trans <- twilightCalc(lig$datetime,
-                      lig$light,
-                      ask=F)
+trans <- TAGS_twilight_calc(tbl$datetime,
+                      tbl$light,
+                      ask=F,
+                      LightThreshold = 15)
 calib <- subset(trans,
                 as.numeric(trans$tSecond) < as.numeric(strptime("2011-06-25 11:24:30",
                                                                 "%Y-%m-%d %H:%M:%S")))
@@ -173,6 +185,10 @@ coord <- coord(trans$tFirst,
                trans$type,
                degElevation=elev)
 head(coord)
+
+devtools::install_github("SLisovski/TwGeos")
+
+library(TwGeos)
 
 #GeoLight vignette
 data(hoopoe1)
