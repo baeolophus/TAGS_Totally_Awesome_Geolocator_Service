@@ -201,21 +201,21 @@ server <- function(input, output, session) {
   #Make the size of file that you can upload larger than default.
   options(shiny.maxRequestSize=30*1024^2) 
 
-  #List out results that you entered at start of sidebar.
-  output$selected_filetype <- renderText({ 
-    paste0("Your filetype is ", input$filetype)
-  })
-  output$selected_species <- renderText({ 
-    paste0("Your species is ", input$species)
-  })
-  output$selected_name <- renderText({ 
-    paste0("Your name is ", input$name)
-  })
-  output$selected_notes <- renderText({ 
-    paste0("Your notes say '",
-          input$notes,
-          "'")
-  })
+  # #List out results that you entered at start of sidebar.
+  # output$selected_filetype <- renderText({ 
+  #   paste0("Your filetype is ", input$filetype)
+  # })
+  # output$selected_species <- renderText({ 
+  #   paste0("Your species is ", input$species)
+  # })
+  # output$selected_name <- renderText({ 
+  #   paste0("Your name is ", input$name)
+  # })
+  # output$selected_notes <- renderText({ 
+  #   paste0("Your notes say '",
+  #         input$notes,
+  #         "'")
+  # })
 
   #########################
   #Read in a dataset from a file.
