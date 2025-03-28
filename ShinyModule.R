@@ -302,6 +302,8 @@ shinyModule <- function(input, output, session, data) {
   #   }
   # }) 
   # 
+  
+  # User input sections
   #########################
   #Create reactive object to put a value into seconds from the edit_units,
   #input$time_window, and input$overlap_window, because posixct seconds are actually required to make it work.
