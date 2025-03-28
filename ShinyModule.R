@@ -238,70 +238,70 @@ shinyModule <- function(input, output, session, data) {
   #          "'")
   # })
   
-  #########################
-  #Read in a dataset from a file.
-  geolocatordata <- reactive({
-    
-    #req() ensures that if file hasn't been read in yet,
-    #the rest of the code doesn't crash with errors.
-    #https://shiny.rstudio.com/articles/req.html
-    req(input$filename)
-    inFile <- input$filename
-    
-    #Nesting ifelse shows what to do if inFile is null (no entry)
-    #and what to do for each input radio button type.
-    if (is.null(inFile)) {return(NULL)} else
-    {
-      if (input$filetype == ".lig") {
-        
-        tbl <- read.csv(inFile$datapath,
-                        header = FALSE,
-                        sep=",")
-        #specifies date and time format.
-        tbl$datetime <- as.POSIXct(strptime(tbl$V2,
-                                            format = "%d/%m/%y %H:%M:%S",
-                                            tz = "GMT"))
-        tbl$light <- tbl$V4
-        tbl <- tbl[, c("datetime",
-                       "light")]
-        return(tbl)
-        
-      } else 
-      {
-        if (input$filetype == ".lux") {
-          
-          tbl <- read.csv(inFile$datapath,
-                          header = FALSE,
-                          sep="\t", #.lux is tab separated not comma
-                          skip = 20)
-          
-          #names headers
-          names(tbl) <- c("datetime", "light")
-          #specifies date and time format.
-          tbl$datetime <- as.POSIXct(strptime(tbl$datetime,
-                                              format = "%d/%m/%Y %H:%M:%S",
-                                              tz = "GMT"))
-          return(tbl)
-          
-        } else {
-          #all else should be .csv files.
-          tbl <- read.csv(inFile$datapath,
-                          header = TRUE,
-                          sep=",")
-          #renames headers if incorrect
-          names(tbl) <- c("datetime", "light")
-          #specifies date and time format.
-          tbl$datetime <- as.POSIXct(strptime(tbl$datetime,
-                                              format = "%Y-%m-%d %H:%M:%S",
-                                              tz = "GMT"))
-          #Should add error notifications here for if something goes wrong in conversions.
-          #use showNotification()
-          return(tbl)
-        }
-      }
-    }
-  }) 
-  
+  # #########################
+  # #Read in a dataset from a file.
+  # geolocatordata <- reactive({
+  #   
+  #   #req() ensures that if file hasn't been read in yet,
+  #   #the rest of the code doesn't crash with errors.
+  #   #https://shiny.rstudio.com/articles/req.html
+  #   req(input$filename)
+  #   inFile <- input$filename
+  #   
+  #   #Nesting ifelse shows what to do if inFile is null (no entry)
+  #   #and what to do for each input radio button type.
+  #   if (is.null(inFile)) {return(NULL)} else
+  #   {
+  #     if (input$filetype == ".lig") {
+  #       
+  #       tbl <- read.csv(inFile$datapath,
+  #                       header = FALSE,
+  #                       sep=",")
+  #       #specifies date and time format.
+  #       tbl$datetime <- as.POSIXct(strptime(tbl$V2,
+  #                                           format = "%d/%m/%y %H:%M:%S",
+  #                                           tz = "GMT"))
+  #       tbl$light <- tbl$V4
+  #       tbl <- tbl[, c("datetime",
+  #                      "light")]
+  #       return(tbl)
+  #       
+  #     } else 
+  #     {
+  #       if (input$filetype == ".lux") {
+  #         
+  #         tbl <- read.csv(inFile$datapath,
+  #                         header = FALSE,
+  #                         sep="\t", #.lux is tab separated not comma
+  #                         skip = 20)
+  #         
+  #         #names headers
+  #         names(tbl) <- c("datetime", "light")
+  #         #specifies date and time format.
+  #         tbl$datetime <- as.POSIXct(strptime(tbl$datetime,
+  #                                             format = "%d/%m/%Y %H:%M:%S",
+  #                                             tz = "GMT"))
+  #         return(tbl)
+  #         
+  #       } else {
+  #         #all else should be .csv files.
+  #         tbl <- read.csv(inFile$datapath,
+  #                         header = TRUE,
+  #                         sep=",")
+  #         #renames headers if incorrect
+  #         names(tbl) <- c("datetime", "light")
+  #         #specifies date and time format.
+  #         tbl$datetime <- as.POSIXct(strptime(tbl$datetime,
+  #                                             format = "%Y-%m-%d %H:%M:%S",
+  #                                             tz = "GMT"))
+  #         #Should add error notifications here for if something goes wrong in conversions.
+  #         #use showNotification()
+  #         return(tbl)
+  #       }
+  #     }
+  #   }
+  # }) 
+  # 
   #########################
   #Create reactive object to put a value into seconds from the edit_units,
   #input$time_window, and input$overlap_window, because posixct seconds are actually required to make it work.
