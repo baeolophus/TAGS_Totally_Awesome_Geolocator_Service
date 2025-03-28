@@ -1,9 +1,11 @@
 .Rproj.user
 .Rhistory
 .RData
-*.tif
-*.tiff
-*.aux.xml
-*.tif.aux.xml
-oklahoma_evaluation_datasetforsdm_naomit_utm.csv
-oklahomadatasetforsdm_naomit_utm.csv
+.Ruserdata
+.DS_Store
+data/output/**
+!data/output/.keep
+.cache/
+.config/
+.local/
+shiny_bookmarks/
