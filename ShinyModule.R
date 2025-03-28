@@ -7,6 +7,7 @@ library(FLightR)
 library(ggplot2)
 library(leaflet)
 library(lubridate)
+library(move2)
 library(scales)
 library(shinycssloaders)
 
