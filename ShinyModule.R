@@ -391,8 +391,8 @@ shinyModule <- function(input, output, session, data) {
   output$plotall <- renderPlot({
     ggplot() + 
       geom_line(data = data, 
-                mapping = aes(data$timestamp,
-                              data$light_level))+
+                mapping = aes(timestamp,
+                              light_level))+
       #draw a line showing where you have set light threshold
       geom_hline(yintercept = input$light_threshold,
                  col = "orange") #+
