@@ -332,9 +332,9 @@ shinyModule <- function(input, output, session, data) {
   output$dateslider <- renderUI({
     sliderInput("dateslider",
                 "Start date/time of editing window",
-                min = min(geolocatordata()$datetime, na.rm = TRUE),
-                max = max(geolocatordata()$datetime, na.rm = TRUE),
-                value = min(geolocatordata()$datetime, na.rm = TRUE), #This sets the initial range to first two days of the dataset
+                min = min(data$datetime, na.rm = TRUE),
+                max = max(data$datetime, na.rm = TRUE),
+                value = min(data$datetime, na.rm = TRUE), #This sets the initial range to first two days of the dataset
                 width = '100%')
   })
   
@@ -354,8 +354,8 @@ shinyModule <- function(input, output, session, data) {
   #this is a method for calculating problems that uses
   #GeoLight's twilight finder modified to remove some options.
   twl <- reactive({
-    TAGS_twilight_calc(geolocatordata()$datetime, 
-                       geolocatordata()$light, 
+    TAGS_twilight_calc(data$datetime, 
+                       data$light, 
                        LightThreshold = input$light_threshold,
                        allTwilights = TRUE)
   })
@@ -381,9 +381,9 @@ shinyModule <- function(input, output, session, data) {
   #which is placed up in layout.  This shows the whole dataset and all problem regions.
   output$plotall <- renderPlot({
     ggplot() + 
-      geom_line(data = geolocatordata(), 
-                mapping = aes(geolocatordata()$datetime,
-                              geolocatordata()$light))+
+      geom_line(data = data, 
+                mapping = aes(data$datetime,
+                              data$light))+
       #draw a line showing where you have set light threshold
       geom_hline(yintercept = input$light_threshold,
                  col = "orange")+
@@ -423,7 +423,7 @@ shinyModule <- function(input, output, session, data) {
   
   observe({
     vals$excluded <- rep(FALSE,
-                         nrow(geolocatordata()))
+                         nrow(data))
   })
   
   ########################
@@ -433,8 +433,8 @@ shinyModule <- function(input, output, session, data) {
     
     
     # Plot the kept and excluded points as two separate data sets
-    keep    <- geolocatordata()[ vals$excluded == FALSE, , drop = FALSE]
-    exclude <- geolocatordata()[ vals$excluded == TRUE, , drop = FALSE]
+    keep    <- data[ vals$excluded == FALSE, , drop = FALSE]
+    exclude <- data[ vals$excluded == TRUE, , drop = FALSE]
     
     ggplot() + 
       geom_point(data = keep, 
@@ -453,8 +453,8 @@ shinyModule <- function(input, output, session, data) {
       scale_x_datetime()+
       coord_cartesian(xlim = c(input$dateslider,
                                input$dateslider+time_window()),
-                      ylim = c(min(geolocatordata()[,"light"], na.rm = TRUE),
-                               max(geolocatordata()[,"light"], na.rm = TRUE)))+
+                      ylim = c(min(data[,"light"], na.rm = TRUE),
+                               max(data[,"light"], na.rm = TRUE)))+
       geom_hline(yintercept = input$light_threshold,
                  col = "orange")+
       geom_rect(data = probTwilights(),
@@ -470,7 +470,7 @@ shinyModule <- function(input, output, session, data) {
   
   # Toggle points that are clicked
   observeEvent(input$plotselected_click, {
-    res <- nearPoints(geolocatordata(),
+    res <- nearPoints(data,
                       input$plotselected_click,
                       allRows = TRUE)
     
@@ -479,7 +479,7 @@ shinyModule <- function(input, output, session, data) {
   
   # Toggle points that are selected, when toggle button is clicked
   observeEvent(input$exclude_toggle, {
-    res <- brushedPoints(geolocatordata(),
+    res <- brushedPoints(data,
                          input$plotselected_brush,
                          allRows = TRUE)
     
@@ -488,7 +488,7 @@ shinyModule <- function(input, output, session, data) {
   observeEvent(input$exclude_reset, 
                {
                  vals$excluded <- rep(FALSE,
-                                      nrow(geolocatordata()))
+                                      nrow(data))
                }
   )
   
@@ -560,7 +560,7 @@ shinyModule <- function(input, output, session, data) {
   #A table to show what values you have excluded
   #(Removing it speeds up rendering the page.)
   observeEvent(input$render_edits, {
-    output$excludedtbl <- renderDT(geolocatordata()[vals$excluded == TRUE, 
+    output$excludedtbl <- renderDT(data[vals$excluded == TRUE, 
                                                     c("datetime", "light"),
                                                     drop = FALSE],
                                    server = TRUE)
@@ -571,7 +571,7 @@ shinyModule <- function(input, output, session, data) {
   #This column needs to be in the final downloaded dataset.
   ##################
   geolocatordata_keep <- eventReactive(input$create_data, {
-    df <- geolocatordata()
+    df <- data
     df$excluded <- vals$excluded
     return(df)
     
