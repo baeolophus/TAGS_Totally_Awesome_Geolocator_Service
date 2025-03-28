@@ -44,39 +44,39 @@ shinyModuleUserInterface <- function(id, label) {
      sidebarLayout(
        sidebarPanel(
          
-         h3("Step 1. Select your file"),
-         # delete this, it was a Shiny Server limit
-         # p("File upload limit of 30 mb; please run the app on your own machine if you have larger datasets."),
-         tags$a(href="https://github.com/baeolophus/TAGS_shiny_version",
-                "Get the TAGS app code here."),
-         br(),
-         tags$a(href="mailto: cmcurry@ou.edu",
-                "Contact Claire M. Curry with any questions."),
-         br(),
-         radioButtons("filetype", 
-                      label = "Select your filetype before browsing for your file",
-                      choices = list(".csv (generic data)",
-                                     ".lig",
-                                     ".lux"
-                      ),
-                      selected = ".csv (generic data)"),
-         br(),
-         radioButtons("dateformat", 
-                      label = "Select your date format before browsing for your file",
-                      choices = list("d/m/y H:M:S",
-                                     "Y/m/d H:M:S"
-                      ),
-                      selected = "d/m/y H:M:S"),
-         
-         fileInput("filename",
-                   label = "Browse for your file",
-                   accept = c("text/csv",
-                              "text/comma-separated-values,text/plain",
-                              ".csv",
-                              ".lig",
-                              ".lux")
-         ),
-         br(), #linebreak
+         # h3("Step 1. Select your file"),
+         # # delete this, it was a Shiny Server limit
+         # # p("File upload limit of 30 mb; please run the app on your own machine if you have larger datasets."),
+         # tags$a(href="https://github.com/baeolophus/TAGS_shiny_version",
+         #        "Get the TAGS app code here."),
+         # br(),
+         # tags$a(href="mailto: cmcurry@ou.edu",
+         #        "Contact Claire M. Curry with any questions."),
+         # br(),
+         # radioButtons("filetype", 
+         #              label = "Select your filetype before browsing for your file",
+         #              choices = list(".csv (generic data)",
+         #                             ".lig",
+         #                             ".lux"
+         #              ),
+         #              selected = ".csv (generic data)"),
+         # br(),
+         # radioButtons("dateformat", 
+         #              label = "Select your date format before browsing for your file",
+         #              choices = list("d/m/y H:M:S",
+         #                             "Y/m/d H:M:S"
+         #              ),
+         #              selected = "d/m/y H:M:S"),
+         # 
+         # fileInput("filename",
+         #           label = "Browse for your file",
+         #           accept = c("text/csv",
+         #                      "text/comma-separated-values,text/plain",
+         #                      ".csv",
+         #                      ".lig",
+         #                      ".lux")
+         # ),
+         # br(), #linebreak
          h3("Step 2. Calibration period information"),
          numericInput("calib_lon", 
                       h4("Calibration longitude"), 
