@@ -10,6 +10,7 @@ library(lubridate)
 library(move2)
 library(scales)
 library(shinycssloaders)
+library(TwGeos)
 
 # Required GitHub library
 # devtools::install_github("SLisovski/GeoLight")
@@ -396,26 +397,26 @@ shinyModule <- function(input, output, session, data) {
       #draw a line showing where you have set light threshold
       geom_hline(yintercept = input$light_threshold,
                  col = "orange") #+
-    # #draw red boxes around problem twilights
-    # geom_rect(data = probTwilights(),
-    #           mapping = aes(xmin = tFirst,
-    #                         xmax = tSecond,
-    #                         ymin = -Inf,
-    #                         ymax = Inf),
-    #           col = "red",
-    #           fill = "red",
-    #           alpha = 0.5)+
-    # labs(x = "timestamp", 
-    #      y = "light_level")+
-    # #draw pale gray box over editing window
-    # annotate("rect",
-    #          xmin = window_x_min$x,
-    #          xmax = window_x_min$x+time_window(),
-    #          ymin = -Inf,
-    #          ymax = Inf,
-    #          col = "gray",
-    #          fill = "gray",
-    #          alpha = 0.5)
+    #draw red boxes around problem twilights
+    geom_rect(data = probTwilights(),
+              mapping = aes(xmin = tFirst,
+                            xmax = tSecond,
+                            ymin = -Inf,
+                            ymax = Inf),
+              col = "red",
+              fill = "red",
+              alpha = 0.5)+
+    labs(x = "timestamp",
+         y = "light_level")+
+    #draw pale gray box over editing window
+    annotate("rect",
+             xmin = window_x_min$x,
+             xmax = window_x_min$x+time_window(),
+             ymin = -Inf,
+             ymax = Inf,
+             col = "gray",
+             fill = "gray",
+             alpha = 0.5)
   })
   
   
