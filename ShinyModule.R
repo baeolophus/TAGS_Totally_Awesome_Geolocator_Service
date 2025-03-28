@@ -121,7 +121,9 @@ shinyModuleUserInterface <- function(id, label) {
          
        ),
        mainPanel(
-         
+         h2("Test plot that data input works"),
+         withSpinner(plotOutput(ns("plot_datainput"),
+                                height = "150px")),
          h2("Step 5. Find problem areas and edit your data"),
          p("This plot shows all of your data with problem areas highlighted in red boxes and the location of the editing window shown in gray."),
          p("An error may show briefly but the plot is still loading as long as the loading indicator returns."),
@@ -218,6 +220,13 @@ shinyModule <- function(input, output, session, data) {
   current <- reactiveVal(data)
   
   ##--## example code - choose which individual to plot ##--## 
+  
+  output$plot_datainput <- renderPlot({
+    ggplot() + 
+      geom_line(data = data, 
+                mapping = aes(x = timestamp,
+                              y = light_level))
+  })
   
   # #Make the size of file that you can upload larger than default.
   # options(shiny.maxRequestSize=30*1024^2) 
@@ -332,9 +341,9 @@ shinyModule <- function(input, output, session, data) {
   output$dateslider <- renderUI({
     sliderInput("dateslider",
                 "Start date/time of editing window",
-                min = min(data$datetime, na.rm = TRUE),
-                max = max(data$datetime, na.rm = TRUE),
-                value = min(data$datetime, na.rm = TRUE), #This sets the initial range to first two days of the dataset
+                min = min(data$timestamp, na.rm = TRUE),
+                max = max(data$timestamp, na.rm = TRUE),
+                value = min(data$timestamp, na.rm = TRUE), #This sets the initial range to first two days of the dataset
                 width = '100%')
   })
   
@@ -354,8 +363,8 @@ shinyModule <- function(input, output, session, data) {
   #this is a method for calculating problems that uses
   #GeoLight's twilight finder modified to remove some options.
   twl <- reactive({
-    TAGS_twilight_calc(data$datetime, 
-                       data$light, 
+    TAGS_twilight_calc(data$timestamp, 
+                       data$light_level, 
                        LightThreshold = input$light_threshold,
                        allTwilights = TRUE)
   })
@@ -382,31 +391,31 @@ shinyModule <- function(input, output, session, data) {
   output$plotall <- renderPlot({
     ggplot() + 
       geom_line(data = data, 
-                mapping = aes(data$datetime,
-                              data$light))+
+                mapping = aes(data$timestamp,
+                              data$light_level))+
       #draw a line showing where you have set light threshold
       geom_hline(yintercept = input$light_threshold,
-                 col = "orange")+
-      #draw red boxes around problem twilights
-      geom_rect(data = probTwilights(),
-                mapping = aes(xmin = tFirst,
-                              xmax = tSecond,
-                              ymin = -Inf,
-                              ymax = Inf),
-                col = "red",
-                fill = "red",
-                alpha = 0.5)+
-      labs(x = "datetime", 
-           y = "light")+
-      #draw pale gray box over editing window
-      annotate("rect",
-               xmin = window_x_min$x,
-               xmax = window_x_min$x+time_window(),
-               ymin = -Inf,
-               ymax = Inf,
-               col = "gray",
-               fill = "gray",
-               alpha = 0.5)
+                 col = "orange") #+
+      # #draw red boxes around problem twilights
+      # geom_rect(data = probTwilights(),
+      #           mapping = aes(xmin = tFirst,
+      #                         xmax = tSecond,
+      #                         ymin = -Inf,
+      #                         ymax = Inf),
+      #           col = "red",
+      #           fill = "red",
+      #           alpha = 0.5)+
+      # labs(x = "timestamp", 
+      #      y = "light_level")+
+      # #draw pale gray box over editing window
+      # annotate("rect",
+      #          xmin = window_x_min$x,
+      #          xmax = window_x_min$x+time_window(),
+      #          ymin = -Inf,
+      #          ymax = Inf,
+      #          col = "gray",
+      #          fill = "gray",
+      #          alpha = 0.5)
   })
   
   
@@ -438,14 +447,14 @@ shinyModule <- function(input, output, session, data) {
     
     ggplot() + 
       geom_point(data = keep, 
-                 mapping = aes(datetime,
-                               light))+
+                 mapping = aes(timestamp,
+                               light_level))+
       geom_line(data = keep, 
-                mapping = aes(datetime,
-                              light))+
+                mapping = aes(timestamp,
+                              light_level))+
       geom_point(data = exclude,
-                 mapping = aes(datetime,
-                               light),
+                 mapping = aes(timestamp,
+                               light_level),
                  shape = 21, 
                  fill = NA, 
                  color = "black",
@@ -453,8 +462,8 @@ shinyModule <- function(input, output, session, data) {
       scale_x_datetime()+
       coord_cartesian(xlim = c(input$dateslider,
                                input$dateslider+time_window()),
-                      ylim = c(min(data[,"light"], na.rm = TRUE),
-                               max(data[,"light"], na.rm = TRUE)))+
+                      ylim = c(min(data[,"light_level"], na.rm = TRUE),
+                               max(data[,"light_level"], na.rm = TRUE)))+
       geom_hline(yintercept = input$light_threshold,
                  col = "orange")+
       geom_rect(data = probTwilights(),
@@ -561,7 +570,7 @@ shinyModule <- function(input, output, session, data) {
   #(Removing it speeds up rendering the page.)
   observeEvent(input$render_edits, {
     output$excludedtbl <- renderDT(data[vals$excluded == TRUE, 
-                                                    c("datetime", "light"),
+                                                    c("timestamp", "light_level"),
                                                     drop = FALSE],
                                    server = TRUE)
   })
@@ -590,8 +599,8 @@ shinyModule <- function(input, output, session, data) {
   #is updated too with new values generated by edited_twilights.
   edited_twilights <- reactive ({
     edited_twilights <- TAGS_twilight_calc(datetime = geolocatordata_keep()[geolocatordata_keep()$excluded == FALSE,
-                                                                            "datetime"],
-                                           light = geolocatordata_keep()[geolocatordata_keep()$excluded == FALSE,"light"],
+                                                                            "timestamp"],
+                                           light = geolocatordata_keep()[geolocatordata_keep()$excluded == FALSE,"light_level"],
                                            LightThreshold = input$light_threshold,
                                            allTwilights = FALSE)
     return(edited_twilights)
