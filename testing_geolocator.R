@@ -201,6 +201,38 @@ twl3 <- twilightCalc(hoopoe1$datetime,
                     LightThreshold = 1.5,
                     ask = F,
                     allTwilights = TRUE)
+
+hoopoe1$Date <- hoopoe1$datetime
+hoopoe1$Light <- hoopoe1$light
+
+
+twl_twgeos <- findTwilights(hoopoe1,
+                            threshold = 1.5,
+                            include = hoopoe1$datetime)
+
+devtools::install_github("SLisovski/GeoLocTools")
+
+library(GeoLocTools)
+library(SGAT)
+
+findHEZenith(twl_twgeos, range = c())
+
+twl <- twl_twgeos
+tol = 0.08
+range = c(250, 350)
+
+z <- seq(89, 99, by = 0.25)
+
+lats  <- apply(cbind(z), 1, function(x) thresholdPath(twl$Twilight, twl$Rise, zenith = x, tol=tol)$x[,2])
+sds   <- apply(lats[range[1]:range[2],], 2, sd, na.rm = T)
+
+z[which.min(sds)]
+
+
+
+
+
+
 head(twl)
 FLightR::GeoLight2TAGS(hoopoe1,
                        twl$consecTwilights,
@@ -296,3 +328,7 @@ twl <- twilightCalc(LANIUS$datetime,
                     allTwilights = TRUE)
 allTwilights <- twl[[1]]
 consecTwilights <- twl[[2]]
+
+
+library(TwGeos)
+findTwilights(tagdata = )

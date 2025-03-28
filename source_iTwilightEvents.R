@@ -1,14 +1,15 @@
 i.twilightEvents <- function(datetime, light, LightThreshold){
+  ################
+  # # for manual testing for smooth
+  # datetime <- df1[,1]
+  # light <- df1[,2]
+  # 
+  # # for manual testing for raw
+  # datetime <- bas$datetime
+  # light <- bas$light
+  ################
+  # actual function
   
-  # for manual testing for smooth
-  datetime <- df1[,1]
-  light <- df1[,2]
-  
-  # for manual testing for raw
-  datetime <- bas$datetime
-  light <- bas$light
-  
-  #actual function
   
   df <- data.frame(datetime, light)
   

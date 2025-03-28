@@ -1,8 +1,13 @@
 i.preSelection <- function(datetime, light, LightThreshold){
   
-  # for manual debugging
-  datetime <- bas$datetime
-  light <- bas$light
+  # ################
+  # # for manual debugging
+  # datetime <- bas$datetime
+  # light <- bas$light
+  # 
+  ################
+  # actual function
+  
   
   dt <- cut(datetime,"1 hour")
   st <- as.POSIXct(levels(dt),"UTC")
