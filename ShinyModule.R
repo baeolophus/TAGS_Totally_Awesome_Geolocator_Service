@@ -414,32 +414,47 @@ shinyModule <- function(input, output, session, data) {
   ######################### In progress updates: TwGeos::findTwilights code guts (not UI)
   
   twl <- reactive({
-    TwGeos::findTwilights(tagdata = data.frame(Date = data$timestamp,
+    twl_rise <- TwGeos::findTwilights(tagdata = data.frame(Date = data$timestamp,
                                                Light = data$light_level), 
                           threshold = input$light_threshold,
                           include = data$timestamp)
+    
+    twl_rise$tSecond <- dplyr::lag(
+      twl_rise$Twilight,                        #column of Twilight times
+      n=1                                       #calculate from one row previous
+      )
+    
+    
+    
+    return(twl_rise)
+    
   })
-  
-  
-  output$twilights_preview <- renderDT(twl(),
-                                    server = TRUE)
   
   
   probTwilights <- reactive ({
     
-    consecTwilights <- twl()[[2]]
+    consecTwilights <- twl()
     consecTwilights$timetonext <- difftime(time1 = consecTwilights$tSecond,
-                                           time2 = consecTwilights$tFirst,
+                                           time2 = consecTwilights$Twilight, # formerly named tFirst
                                            units = "hours")
     #Then we flag twilights with < 5 hrs time to next twilight as potential problems.
-    probTwilights <- consecTwilights[consecTwilights$timetonext < input$problem_threshold,
-                                     c("tFirst",
+    probTwilights <- consecTwilights[abs(consecTwilights$timetonext) < input$problem_threshold,
+                                     # use absolute value so it doesn't matter which number is first
+                                     
+                                     c("Twilight",   # formerly named tFirst
                                        "tSecond",
-                                       "type")]
+                                       "timetonext", # in hours
+                                       "Rise")]      # formerly named "type"
     #This final object is the one that is passed outside as the reactive object used later.
     #So if you do additional methods or change it, make sure the last object is the one that contains
     #problem twilights with columns tFirst (POSIXct), tSecond (POSIXct), and type (num)
   })
+  
+  
+  output$twilights_preview <- renderDT(probTwilights(),
+                                       server = TRUE)
+  
+  
   
   
   ######################### Plot all data and problems ########## 
@@ -452,11 +467,11 @@ shinyModule <- function(input, output, session, data) {
                               light_level))+
       #draw a line showing where you have set light threshold
       geom_hline(yintercept = input$light_threshold,
-                 col = "orange") #+
+                 col = "orange") +
     #draw red boxes around problem twilights
     geom_rect(data = probTwilights(),
-              mapping = aes(xmin = tFirst,
-                            xmax = tSecond,
+              mapping = aes(xmin = tSecond, #smaller one is tSecond
+                            xmax = Twilight,#larger value is Twilight
                             ymin = -Inf,
                             ymax = Inf),
               col = "red",
