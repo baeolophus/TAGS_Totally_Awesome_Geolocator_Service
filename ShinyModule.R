@@ -1,3 +1,5 @@
+########## Libraries ###########
+
 library("shiny")
 
 # Required CRAN libraries other than shiny
@@ -21,14 +23,13 @@ library(GeoLight)
 # one can use the function from the src/common/logger.R file:
 # logger.fatal(), logger.error(), logger.warn(), logger.info(), logger.debug(), logger.trace()
 
-########
-#Bring in functions to make the main app work.
+######## Create custom functions ########## 
+# Bring in functions to make the main app work.
 #These are the pager for the editing plot 
 #and the adapted twilight calculation function from GeoLight.
 source("global.R")
 
-########
-#Define UI for application
+######## Define UI ########## 
 #This is where you lay out page design and specify buttons, etc.
 
 
@@ -134,8 +135,8 @@ shinyModuleUserInterface <- function(id, label) {
                                height = "150px")),
         
         
-        ##############################
-        #Input slider based on reactive dataframe.
+        ########### Input slider ########## 
+        # based on reactive dataframe.
         #https://stackoverflow.com/questions/18700589/interactive-reactive-change-of-min-max-values-of-sliderinput
         
         uiOutput(ns("dateslider")),
@@ -160,8 +161,8 @@ shinyModuleUserInterface <- function(id, label) {
         br(),
         actionButton("click_PrevProb", "Previous problem"),
         actionButton("click_NextProb", "Next problem"),
-        ##############################
-        #plot a subset of the data that is zoomed in enough to see and edit individual points.
+        ############################## plot a subset of data ########## 
+        # that is zoomed in enough to see and edit individual points.
         plotOutput(ns("plotselected"),
                    click = "plotselected_click",
                    brush = brushOpts(
@@ -211,8 +212,8 @@ shinyModuleUserInterface <- function(id, label) {
 
 
 
-#######
-# Define server functions that pass back to UI (this is where all the data processing happens)
+######## Define server functions ########## 
+# that pass back to UI (this is where all the data processing happens)
 
 # The parameter "data" is reserved for the data object passed on from the previous app
 shinyModule <- function(input, output, session, data) {
@@ -248,8 +249,7 @@ shinyModule <- function(input, output, session, data) {
   #          "'")
   # })
   
-  # #########################
-  # #Read in a dataset from a file.
+  # ######################### Deprecated: Read in a dataset from a file.########## 
   # geolocatordata <- reactive({
   #   
   #   #req() ensures that if file hasn't been read in yet,
@@ -313,9 +313,9 @@ shinyModule <- function(input, output, session, data) {
   # }) 
   # 
   
-  # User input sections
-  #########################
-  #Create reactive object to put a value into seconds from the edit_units,
+  ########### User input sections ########## 
+  
+  ######################### Create reactive object to put a value into seconds from the edit_units,
   #input$time_window, and input$overlap_window, because posixct seconds are actually required to make it work.
   
   time_window <- reactive ({
@@ -336,7 +336,7 @@ shinyModule <- function(input, output, session, data) {
     return(overlap_size_in_sec)}}   
   })      
   
-  #########################
+  ######################### Show date/time slider for edit window ########## 
   #create a user interface dynamic slider based on reactive data
   #shows where the start of the editing window is located and changed with that change in value.
   output$dateslider <- renderUI({
@@ -348,7 +348,7 @@ shinyModule <- function(input, output, session, data) {
                 width = '100%')
   })
   
-  #########################
+  ######################### Set value of left side of edit window ########## 
   #Set the value of the left side of the editing window as a reactive that can change
   #with the value of the date slider.  This also allows you to change the window
   #location with the next/prev buttons.
@@ -358,7 +358,7 @@ shinyModule <- function(input, output, session, data) {
   observe({
     window_x_min$x <- input$dateslider #starts at the value of the date slider which starts at the minimum x value of dataset.
   })
-  #########################
+  ######################### Calculate problem twilights ########## 
   #Create reactive object that calculates problem twilights.
   #THIS SECTION IS WHERE YOU WOULD PUT NEW METHODS FOR CALCULATING PROBLEM REGIONS.
   #this is a method for calculating problems that uses
@@ -386,7 +386,7 @@ shinyModule <- function(input, output, session, data) {
     #problem twilights with columns tFirst (POSIXct), tSecond (POSIXct), and type (num)
   })
   
-  #########################  
+  ######################### Plot all data and problems ########## 
   #use renderPlot function to pass to output "plotall" 
   #which is placed up in layout.  This shows the whole dataset and all problem regions.
   output$plotall <- renderPlot({
@@ -436,7 +436,7 @@ shinyModule <- function(input, output, session, data) {
                          nrow(data))
   })
   
-  ########################
+  ######################## Plot edit window only ########## 
   
   #Plot only the paged/selected rows.
   output$plotselected <- renderPlot({
@@ -502,7 +502,7 @@ shinyModule <- function(input, output, session, data) {
                }
   )
   
-  ##################
+  ################## Prev/next buttons for edit window ########## 
   #Buttons for moving forward and backwards in the dataset
   
   #Watches for the dateslider's value (which defaults to minimum of dataset) and starts the editing window there
@@ -566,7 +566,7 @@ shinyModule <- function(input, output, session, data) {
                })
   
   
-  ###################
+  ################### Table showing excluded values ########## 
   #A table to show what values you have excluded
   #(Removing it speeds up rendering the page.)
   observeEvent(input$render_edits, {
@@ -576,10 +576,10 @@ shinyModule <- function(input, output, session, data) {
                                    server = TRUE)
   })
   
-  ##################
+  ################## Adding column for excluded points ########## 
   #Adding true/false excluded column to new reactive data frame
   #This column needs to be in the final downloaded dataset.
-  ##################
+
   geolocatordata_keep <- eventReactive(input$create_data, {
     df <- data
     df$excluded <- vals$excluded
@@ -590,9 +590,8 @@ shinyModule <- function(input, output, session, data) {
     output$data_preview <- renderDT(geolocatordata_keep(),
                                     server = TRUE)
   })
-  ##################
-  #Calibration/computation of sun elevation angle from calibration data.
-  ##################
+  
+  ################## Calibration/computation of sun elevation angle from calibration data.##################
   
   #Create a reactive object that is updated
   #when keep values are altered by clicks.
@@ -635,9 +634,8 @@ shinyModule <- function(input, output, session, data) {
                        value = as.numeric(elev))
   })
   
-  ##################
+  ################## Create TAGS format including interpolations ########## 
   #Get to TAGS format by including interpolations
-  ##################   
   #From FLightR documentation:
   #"The fields excluded and interp may have values of TRUE only for twilight > 0."
   #But this does not make sense when we exclude data points, not twilights.
@@ -720,10 +718,7 @@ shinyModule <- function(input, output, session, data) {
   })
   
   
-  ##################
-  #MAP
-  ##################
-  
+  ################## Map for checking point "reasonableness" ########## 
   #On clicking the actionButton update_map,
   #the map is generated or refreshed with new values.
   #having this isolated in observeEvent keeps it from updating
@@ -762,10 +757,10 @@ shinyModule <- function(input, output, session, data) {
   
   
   
-  ##################
+  ################## Downloading data files ########## 
   #Code to do downloading here and in UI adapted from here:
   #https://stackoverflow.com/questions/41856577/upload-data-change-data-frame-and-download-result-using-shiny-package
-  ##################
+
   
   output$downloadData <- downloadHandler(
     
@@ -820,7 +815,7 @@ shinyModule <- function(input, output, session, data) {
       
     })
   ##--## end of example ##--##
-  
+  ########## Return reactive dataset for next item in MoveApps workflow ########## 
   # data must be returned. Either the unmodified input data, or the modified data by the app
   return(reactive({ current() }))  
   # return(reactive({ modifiedData() }))  # I think I  need this one?  do I put the object inside ()?
