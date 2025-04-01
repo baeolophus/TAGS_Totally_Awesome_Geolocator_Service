@@ -27,7 +27,11 @@ library(GeoLight)
 # Bring in functions to make the main app work.
 #These are the pager for the editing plot 
 #and the adapted twilight calculation function from GeoLight.
-source("global.R")
+# source("global.R")
+
+# Adapted from: https://github.com/slisovski/TwGeos/blob/028f4992c3068b511635ce5a74beb4165be1a2bb/R/TwGeos.R#L558
+
+
 
 ######## Define UI ########## 
 #This is where you lay out page design and specify buttons, etc.
@@ -130,6 +134,8 @@ shinyModuleUserInterface <- function(id, label) {
         h2("Test plot that data input works"),
         withSpinner(plotOutput(ns("plot_datainput"),
                                height = "150px")),
+        
+        DTOutput(ns('twilights_preview')),
         ########### Plot problem areas ########### 
         h2("Step 5. Find problem areas and edit your data"),
         p("This plot shows all of your data with problem areas highlighted in red boxes and the location of the editing window shown in gray."),
@@ -408,11 +414,16 @@ shinyModule <- function(input, output, session, data) {
   ######################### In progress updates: TwGeos::findTwilights code guts (not UI)
   
   twl <- reactive({
-    TAGS_twilight_calc(data$timestamp, 
-                       data$light_level, 
-                       LightThreshold = input$light_threshold,
-                       allTwilights = TRUE)
+    TwGeos::findTwilights(tagdata = data.frame(Date = data$timestamp,
+                                               Light = data$light_level), 
+                          threshold = input$light_threshold,
+                          include = data$timestamp)
   })
+  
+  
+  output$twilights_preview <- renderDT(twl(),
+                                    server = TRUE)
+  
   
   probTwilights <- reactive ({
     
