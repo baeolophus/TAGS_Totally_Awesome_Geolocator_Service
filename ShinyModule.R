@@ -591,8 +591,7 @@ shinyModule <- function(input, output, session, data) {
                                     server = TRUE)
   })
   
-  ################## Calibration/computation of sun elevation angle from calibration data.##################
-  
+   ################# Create edited twilights object #####################
   #Create a reactive object that is updated
   #when keep values are altered by clicks.
   #It is updated and then the calibration object (calib)
@@ -605,6 +604,9 @@ shinyModule <- function(input, output, session, data) {
                                            allTwilights = FALSE)
     return(edited_twilights)
   })
+  
+  ################## Calibration/computation of sun elevation angle from calibration data.##################
+  
   
   calib <- reactive ({
     consecTwilights <- twl()[[2]]
