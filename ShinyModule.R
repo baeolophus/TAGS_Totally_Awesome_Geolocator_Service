@@ -99,6 +99,7 @@ shinyModuleUserInterface <- function(id, label) {
         # numericInput(ns("sunangle"), "Sun angle", value = 0),
         # actionButton("calculate", "Calculate sun angle from data"),
         # br(),
+        ########### Light Threshold Entry ########### 
         h3("Step 3. Light threshold entry"),
         p("Be sure to enter a value within the range of your data. For example, if the values of light in your dataset range from 40 to 200, you will need to increase the light threshold to a value between 40 and 200"),
         #Enter a value for light threshold to calculate sunrise/sunset.
@@ -107,6 +108,7 @@ shinyModuleUserInterface <- function(id, label) {
                      value = 5.5,
                      step = 0.1),
         br(),
+        ########### Time length to find problem twilights (optional) ########### 
         h3("Step 4. Optional: change value for finding problem areas"),
         #Enter a value for length of time between twilights to count as a potential problem.
         p("This is the difference in twilight times in hours that will highlight a twilight as a potential problem in red."),
@@ -123,9 +125,12 @@ shinyModuleUserInterface <- function(id, label) {
         
       ),
       mainPanel(
+        
+        ########### Plot raw unannotated data ########### 
         h2("Test plot that data input works"),
         withSpinner(plotOutput(ns("plot_datainput"),
                                height = "150px")),
+        ########### Plot problem areas ########### 
         h2("Step 5. Find problem areas and edit your data"),
         p("This plot shows all of your data with problem areas highlighted in red boxes and the location of the editing window shown in gray."),
         p("An error may show briefly but the plot is still loading as long as the loading indicator returns."),
@@ -135,7 +140,7 @@ shinyModuleUserInterface <- function(id, label) {
                                height = "150px")),
         
         
-        ########### Input slider ########## 
+        ########### Input slider for dates ########## 
         # based on reactive dataframe.
         #https://stackoverflow.com/questions/18700589/interactive-reactive-change-of-min-max-values-of-sliderinput
         
@@ -161,7 +166,7 @@ shinyModuleUserInterface <- function(id, label) {
         br(),
         actionButton("click_PrevProb", "Previous problem"),
         actionButton("click_NextProb", "Next problem"),
-        ############################## plot a subset of data ########## 
+        ############################## Plot editing window ########## 
         # that is zoomed in enough to see and edit individual points.
         plotOutput(ns("plotselected"),
                    click = "plotselected_click",
@@ -169,27 +174,39 @@ shinyModuleUserInterface <- function(id, label) {
                      id = "plotselected_brush"
                    )
         ),
+        ########### Buttons to toggle edits ########### 
         #buttons to toggle editing plot points selected by a box.
         actionButton("exclude_toggle", "Toggle currently selected points"),
         actionButton("exclude_reset", "Reset ALL EXCLUDED POINTS"),
         br(),
         
         actionButton("render_edits", "Show/refresh edited values"),
+        
+        ########### Excluded points table ########### 
+        
         DTOutput(ns('excludedtbl')),
+        
+        ########### Map for "reasonableness" check ########### 
         h2("Step 6. Generate coordinates"),
         
         #This actionButton is linked by its name (update_map) to an observeEvent in the server function
         #When you press this the keep dataset is generated and the mymap object is shown.
         
+        ########### Generate edited twilights ########### 
         actionButton("create_data", "6A. Generate edited twilights for coordinate calculation"),
+        
+        ########### Edited data preview ########### 
         DTOutput(ns('data_preview')),
         
         br(),
+        
+        ########### Generate map from edited data ########### 
         actionButton("update_map", "6B. Generate map from edited twilights"),
         #Map showing calculated coordinates from sunrise/sunset times.
         leafletOutput(ns("mymap")),
         br(),
         
+        ########### Data download buttons ########### 
         h2("Step 7. Download data"),
         
         #Button to download data.
@@ -605,7 +622,7 @@ shinyModule <- function(input, output, session, data) {
     return(edited_twilights)
   })
   
-  # ################## Calibration/computation of sun elevation angle from calibration data.##################
+  # ################## Deprecated: Calibration/computation of sun elevation angle from calibration data.##################
   # 
   # 
   # calib <- reactive ({
