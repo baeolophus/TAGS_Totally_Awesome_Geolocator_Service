@@ -378,8 +378,35 @@ shinyModule <- function(input, output, session, data) {
   ######################### Calculate problem twilights ########## 
   #Create reactive object that calculates problem twilights.
   #THIS SECTION IS WHERE YOU WOULD PUT NEW METHODS FOR CALCULATING PROBLEM REGIONS.
-  #this is a method for calculating problems that uses
-  #GeoLight's twilight finder modified to remove some options.
+  
+  # ######################### Deprecated and broke: GeoLight twilightCalc method ###########
+  # #this is a method for calculating problems that uses
+  # #GeoLight's twilight finder modified to remove some options.
+  # twl <- reactive({
+  #   TAGS_twilight_calc(data$timestamp, 
+  #                      data$light_level, 
+  #                      LightThreshold = input$light_threshold,
+  #                      allTwilights = TRUE)
+  # })
+  # 
+  # probTwilights <- reactive ({
+  #   
+  #   consecTwilights <- twl()[[2]]
+  #   consecTwilights$timetonext <- difftime(time1 = consecTwilights$tSecond,
+  #                                          time2 = consecTwilights$tFirst,
+  #                                          units = "hours")
+  #   #Then we flag twilights with < 5 hrs time to next twilight as potential problems.
+  #   probTwilights <- consecTwilights[consecTwilights$timetonext < input$problem_threshold,
+  #                                    c("tFirst",
+  #                                      "tSecond",
+  #                                      "type")]
+  #   #This final object is the one that is passed outside as the reactive object used later.
+  #   #So if you do additional methods or change it, make sure the last object is the one that contains
+  #   #problem twilights with columns tFirst (POSIXct), tSecond (POSIXct), and type (num)
+  # })
+  # 
+  ######################### In progress updates: TwGeos::findTwilights code guts (not UI)
+  
   twl <- reactive({
     TAGS_twilight_calc(data$timestamp, 
                        data$light_level, 
@@ -402,6 +429,9 @@ shinyModule <- function(input, output, session, data) {
     #So if you do additional methods or change it, make sure the last object is the one that contains
     #problem twilights with columns tFirst (POSIXct), tSecond (POSIXct), and type (num)
   })
+  
+  
+  
   
   ######################### Plot all data and problems ########## 
   #use renderPlot function to pass to output "plotall" 
