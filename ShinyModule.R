@@ -431,8 +431,6 @@ shinyModule <- function(input, output, session, data) {
   })
   
   
-  
-  
   ######################### Plot all data and problems ########## 
   #use renderPlot function to pass to output "plotall" 
   #which is placed up in layout.  This shows the whole dataset and all problem regions.
