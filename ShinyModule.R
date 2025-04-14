@@ -343,19 +343,19 @@ shinyModule <- function(input, output, session, data) {
   
   time_window <- reactive ({
     if (input$edit_units == "days")
-    {window_size_in_sec <- input$time_window * 24 * 60 * 60
+    {window_size_in_sec <- input$time_window * 24 * 60 * 60 #This converts days to seconds
     return(window_size_in_sec)}
     else
-    {{window_size_in_sec <- input$time_window * 60 * 60
+    {{window_size_in_sec <- input$time_window * 60 * 60     #This converts hours to seconds
     return(window_size_in_sec)}}   
   })  
   
   overlap_window <- reactive ({
     if (input$edit_units == "days")
-    {overlap_size_in_sec <- input$overlap_window * 24 * 60 * 60
+    {overlap_size_in_sec <- input$overlap_window * 24 * 60 * 60 #This converts days to seconds
     return(overlap_size_in_sec)}
     else
-    {{overlap_size_in_sec <- input$overlap_window * 60 * 60
+    {{overlap_size_in_sec <- input$overlap_window * 60 * 60     #This converts hours to seconds
     return(overlap_size_in_sec)}}   
   })      
   
