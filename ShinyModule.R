@@ -496,7 +496,7 @@ shinyModule <- function(input, output, session, data) {
   #Store excluded rows
   #with modifications from 
   #https://groups.google.com/forum/#!topic/shiny-discuss/YyupMW66HZ8 
-  #to adapt to file upload
+  #Specifically, https://groups.google.com/g/shiny-discuss/c/YyupMW66HZ8/m/hFlyuRa6AwAJ 
   
   vals <- reactiveValues( 
     excluded = NULL
@@ -511,7 +511,7 @@ shinyModule <- function(input, output, session, data) {
   
   #Plot only the paged/selected rows.
   output$plotselected <- renderPlot({
-    
+  
     
     # Plot the kept and excluded points as two separate data sets
     
@@ -542,8 +542,8 @@ shinyModule <- function(input, output, session, data) {
       geom_hline(yintercept = input$light_threshold,
                  col = "orange")+
       geom_rect(data = probTwilights(),
-                mapping = aes(xmin = tFirst,
-                              xmax = tSecond,
+                mapping = aes(xmin = tSecond, #smaller one is tSecond
+                              xmax = Twilight,#larger value is Twilight
                               ymin = -Inf,
                               ymax = Inf),
                 col = "red",
