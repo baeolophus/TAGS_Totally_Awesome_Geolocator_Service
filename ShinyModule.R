@@ -450,7 +450,7 @@ shinyModule <- function(input, output, session, data) {
     #problem twilights with columns tFirst (POSIXct), tSecond (POSIXct), and type (num)
   })
   
-  
+  # Troubleshooting table to show twilights, comment out when not in development
   output$twilights_preview <- renderDT(probTwilights(),
                                        server = TRUE)
   
@@ -514,6 +514,9 @@ shinyModule <- function(input, output, session, data) {
     
     
     # Plot the kept and excluded points as two separate data sets
+    
+    # Why use drop = FALSE: https://www.r-bloggers.com/2018/02/r-tip-use-drop-false-with-data-frames/
+    
     keep    <- data[ vals$excluded == FALSE, , drop = FALSE]
     exclude <- data[ vals$excluded == TRUE, , drop = FALSE]
     
