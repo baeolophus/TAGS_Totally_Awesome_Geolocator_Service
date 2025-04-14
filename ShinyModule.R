@@ -167,11 +167,11 @@ shinyModuleUserInterface <- function(id, label) {
         numericInput(ns("overlap_window"), "What overlap with previous window?",
                      value = round(1/24, 2)), #Default shows 1 hour in seconds (3600 sec)
         p("Use the Previous and Next buttons to move to the next or previous editing window or problem twilight"),
-        actionButton("click_Prev", "Previous editing window"),
-        actionButton("click_Next", "Next editing window"),
+        actionButton(ns("click_Prev"), "Previous editing window"),
+        actionButton(ns("click_Next"), "Next editing window"),
         br(),
-        actionButton("click_PrevProb", "Previous problem"),
-        actionButton("click_NextProb", "Next problem"),
+        actionButton(ns("click_PrevProb"), "Previous problem"),
+        actionButton(ns("click_NextProb"), "Next problem"),
         ############################## Plot editing window ########## 
         # that is zoomed in enough to see and edit individual points.
         plotOutput(ns("plotselected"),
@@ -182,11 +182,11 @@ shinyModuleUserInterface <- function(id, label) {
         ),
         ########### Buttons to toggle edits ########### 
         #buttons to toggle editing plot points selected by a box.
-        actionButton("exclude_toggle", "Toggle currently selected points"),
-        actionButton("exclude_reset", "Reset ALL EXCLUDED POINTS"),
+        actionButton(ns("exclude_toggle"), "Toggle currently selected points"),
+        actionButton(ns("exclude_reset"), "Reset ALL EXCLUDED POINTS"),
         br(),
         
-        actionButton("render_edits", "Show/refresh edited values"),
+        actionButton(ns("render_edits"), "Show/refresh edited values"),
         
         ########### Excluded points table ########### 
         
@@ -199,7 +199,7 @@ shinyModuleUserInterface <- function(id, label) {
         #When you press this the keep dataset is generated and the mymap object is shown.
         
         ########### Generate edited twilights ########### 
-        actionButton("create_data", "6A. Generate edited twilights for coordinate calculation"),
+        actionButton(ns("create_data"), "6A. Generate edited twilights for coordinate calculation"),
         
         ########### Edited data preview ########### 
         DTOutput(ns('data_preview')),
@@ -207,7 +207,7 @@ shinyModuleUserInterface <- function(id, label) {
         br(),
         
         ########### Generate map from edited data ########### 
-        actionButton("update_map", "6B. Generate map from edited twilights"),
+        actionButton(ns("update_map"), "6B. Generate map from edited twilights"),
         #Map showing calculated coordinates from sunrise/sunset times.
         leafletOutput(ns("mymap")),
         br(),
