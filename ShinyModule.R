@@ -534,13 +534,20 @@ shinyModule <- function(input, output, session, data) {
                  fill = NA, 
                  color = "black",
                  alpha = 0.25)+
-      scale_x_datetime()+
-      coord_cartesian(xlim = c(input$dateslider,
-                               input$dateslider+time_window()),
-                      ylim = c(min(data[,"light_level"], na.rm = TRUE),
-                               max(data[,"light_level"], na.rm = TRUE)))+
+      # scale_x_datetime(limits = c(
+      #   min(data$timestamp, na.rm = TRUE),
+      #   min(data$timestamp, na.rm = TRUE)+2*24*60*60
+      # ))+
+      coord_cartesian(
+         xlim = c(
+         # input$dateslider,
+         # input$dateslider+time_window()
+          min(data$timestamp, na.rm = TRUE),
+          min(data$timestamp, na.rm = TRUE)+2*24*60*60
+         )
+         )+
       geom_hline(yintercept = input$light_threshold,
-                 col = "orange")+
+                 col = "orange")  +
       geom_rect(data = probTwilights(),
                 mapping = aes(xmin = tSecond, #smaller one is tSecond
                               xmax = Twilight,#larger value is Twilight
@@ -549,7 +556,7 @@ shinyModule <- function(input, output, session, data) {
                 col = "red",
                 fill = "red",
                 alpha = 0.5)
-    
+
   })
   
   # Toggle points that are clicked
