@@ -363,12 +363,16 @@ shinyModule <- function(input, output, session, data) {
   #create a user interface dynamic slider based on reactive data
   #shows where the start of the editing window is located and changed with that change in value.
   output$dateslider <- renderUI({
+    print(paste("sliderInput original value at 373:", 
+                min(data$timestamp, na.rm = TRUE)))
     sliderInput("dateslider",
                 "Start date/time of editing window",
                 min = min(data$timestamp, na.rm = TRUE),
                 max = max(data$timestamp, na.rm = TRUE),
                 value = min(data$timestamp, na.rm = TRUE), #This sets the initial range to first two days of the dataset
                 width = '100%')
+    
+    
   })
   
   ######################### Set value of left side of edit window ########## 
@@ -380,7 +384,8 @@ shinyModule <- function(input, output, session, data) {
   
   observe({
     window_x_min$x <- input$dateslider #starts at the value of the date slider which starts at the minimum x value of dataset.
-    print(paste0("Currenth length of dateslider value", length(input$dateslider)))
+    print(paste0("Dateslider value at 383: ", input$dateslider,
+                 " and window_x_min$x value is ", window_x_min$x))
     })
   
 
@@ -598,8 +603,13 @@ shinyModule <- function(input, output, session, data) {
   #Buttons for moving forward and backwards in the dataset
   
   #Watches for the dateslider's value (which defaults to minimum of dataset) and starts the editing window there
-  observeEvent(input$dateslider,
-               window_x_min$x <- input$dateslider)
+  observeEvent(input$dateslider, {
+               window_x_min$x <- input$dateslider
+               
+               print(paste0("Length of dateslider value at 604", 
+                            length(input$dateslider)))
+  }
+               )
   #When you click next, it goes to the next window's x coordinate minus any overlap with previous window.
   observeEvent(input$click_Next,
                handlerExpr = {
