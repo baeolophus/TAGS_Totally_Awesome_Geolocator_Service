@@ -606,7 +606,7 @@ shinyModule <- function(input, output, session, data) {
   observeEvent(input$dateslider, {
                window_x_min$x <- input$dateslider
                
-               print(paste0("Length of dateslider value at 604", 
+               print(paste0("Length of dateslider value at 604, when it is set a second time or updated", 
                             length(input$dateslider)))
   }
                )
