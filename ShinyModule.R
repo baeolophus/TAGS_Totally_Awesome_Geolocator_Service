@@ -380,7 +380,14 @@ shinyModule <- function(input, output, session, data) {
   
   observe({
     window_x_min$x <- input$dateslider #starts at the value of the date slider which starts at the minimum x value of dataset.
-  })
+    print(paste0("Currenth length of dateslider value", length(input$dateslider)))
+    })
+  
+
+  # https://stackoverflow.com/questions/48284793/how-do-i-print-an-input-from-the-r-shiny-ui-to-the-console
+  # Console message to help debugging date formats in edit window
+  
+  
   ######################### Calculate problem twilights ########## 
   #Create reactive object that calculates problem twilights.
   #THIS SECTION IS WHERE YOU WOULD PUT NEW METHODS FOR CALCULATING PROBLEM REGIONS.
@@ -461,6 +468,10 @@ shinyModule <- function(input, output, session, data) {
   #use renderPlot function to pass to output "plotall" 
   #which is placed up in layout.  This shows the whole dataset and all problem regions.
   output$plotall <- renderPlot({
+    
+    print(paste0("Current length of dateslider value at plotall",
+                 length(input$dateslider)))
+    
     ggplot() + 
       geom_line(data = data, 
                 mapping = aes(timestamp,
@@ -481,8 +492,8 @@ shinyModule <- function(input, output, session, data) {
          y = "light_level")+
     #draw pale gray box over editing window
     annotate("rect",
-             xmin = window_x_min$x,
-             xmax = window_x_min$x+time_window(),
+             xmin = window_x_min$x[1],
+             xmax = window_x_min$x[1]+time_window(),
              ymin = -Inf,
              ymax = Inf,
              col = "gray",
@@ -540,10 +551,10 @@ shinyModule <- function(input, output, session, data) {
       # ))+
       coord_cartesian(
          xlim = c(
-         # input$dateslider,
-         # input$dateslider+time_window()
-          min(data$timestamp, na.rm = TRUE),
-          min(data$timestamp, na.rm = TRUE)+2*24*60*60
+          window_x_min$x,
+          window_x_min$x+time_window()
+         # min(data$timestamp, na.rm = TRUE),
+         # min(data$timestamp, na.rm = TRUE)+2*24*60*60
          )
          )+
       geom_hline(yintercept = input$light_threshold,
