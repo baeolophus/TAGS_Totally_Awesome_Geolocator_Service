@@ -150,7 +150,7 @@ shinyModuleUserInterface <- function(id, label) {
         # based on reactive dataframe.
         #https://stackoverflow.com/questions/18700589/interactive-reactive-change-of-min-max-values-of-sliderinput
         
-        uiOutput(ns("dateslider")),
+        uiOutput(ns("dateslider_render")),
         
         p("The plot below can be edited by clicking a single data point or left-clicking and dragging your cursor to select multiple points."),
         
@@ -362,10 +362,10 @@ shinyModule <- function(input, output, session, data) {
   ######################### Show date/time slider for edit window ########## 
   #create a user interface dynamic slider based on reactive data
   #shows where the start of the editing window is located and changed with that change in value.
-  output$dateslider <- renderUI({
-    print(paste("sliderInput original value at 373:", 
+  output$dateslider_render <- renderUI({
+    print(paste("sliderInput original value at 366:", 
                 min(data$timestamp, na.rm = TRUE)))
-    sliderInput("dateslider",
+    sliderInput("dateslider_input",
                 "Start date/time of editing window",
                 min = min(data$timestamp, na.rm = TRUE),
                 max = max(data$timestamp, na.rm = TRUE),
@@ -375,19 +375,34 @@ shinyModule <- function(input, output, session, data) {
     
   })
   
-  ######################### Set value of left side of edit window ########## 
+  
+  # Create a reactive value that can be updated when slider changes and used in later plots
+  window_x_min <- reactiveValues(  x = NULL)
+
+  
   #Set the value of the left side of the editing window as a reactive that can change
   #with the value of the date slider.  This also allows you to change the window
   #location with the next/prev buttons.
-  window_x_min <- reactiveValues()
-  window_x_min$x <- NULL
+  #Watches for the dateslider's value (which defaults to minimum of dataset in previous code chunk) and starts the editing window there
+  # Observe continually waits for any reactive variable (like sliderInput) to change
+  # and can updated values of the reactiveValue window_x_min
+  # details: https://stackoverflow.com/questions/53016404/advantages-of-reactive-vs-observe-vs-observeevent
   
-  observe({
-    window_x_min$x <- input$dateslider #starts at the value of the date slider which starts at the minimum x value of dataset.
-    print(paste0("Dateslider value at 383: ", input$dateslider,
+  
+    observe({
+      
+    print(paste0("Value of dateslider value at 394, when it is 'observe'd is ", 
+                   input$dateslider_input, 
+                 "and value of window_x_min$x is ",
+                 window_x_min$x))
+    window_x_min$x <- input$dateslider_input
+    
+    print(paste0("Length of dateslider_input value at 398, after window_x is updated is", 
+                 length(input$dateslider_input),
                  " and window_x_min$x value is ", window_x_min$x))
-    })
-  
+  }
+  )
+
 
   # https://stackoverflow.com/questions/48284793/how-do-i-print-an-input-from-the-r-shiny-ui-to-the-console
   # Console message to help debugging date formats in edit window
@@ -474,8 +489,8 @@ shinyModule <- function(input, output, session, data) {
   #which is placed up in layout.  This shows the whole dataset and all problem regions.
   output$plotall <- renderPlot({
     
-    print(paste0("Current length of dateslider value at plotall",
-                 length(input$dateslider)))
+    print(paste0("Current length of dateslider_input value at plotall",
+                 length(input$dateslider_input)))
     
     ggplot() + 
       geom_line(data = data, 
@@ -602,20 +617,12 @@ shinyModule <- function(input, output, session, data) {
   ################## Prev/next buttons for edit window ########## 
   #Buttons for moving forward and backwards in the dataset
   
-  #Watches for the dateslider's value (which defaults to minimum of dataset) and starts the editing window there
-  observeEvent(input$dateslider, {
-               window_x_min$x <- input$dateslider
-               
-               print(paste0("Length of dateslider value at 604, when it is set a second time or updated", 
-                            length(input$dateslider)))
-  }
-               )
   #When you click next, it goes to the next window's x coordinate minus any overlap with previous window.
   observeEvent(input$click_Next,
                handlerExpr = {
                  window_x_min$x <- window_x_min$x + time_window() - overlap_window()
                  updateSliderInput(session,
-                                   "dateslider",
+                                   "dateslider_input",
                                    value = window_x_min$x)
                })
   #Same for previous except it goes back in time.
@@ -623,7 +630,7 @@ shinyModule <- function(input, output, session, data) {
                handlerExpr = {
                  window_x_min$x <-  window_x_min$x - (time_window() - overlap_window())
                  updateSliderInput(session,
-                                   "dateslider",
+                                   "dateslider_input",
                                    value = window_x_min$x)
                })
   #Waits for click on Next Problem button
@@ -643,7 +650,7 @@ shinyModule <- function(input, output, session, data) {
                    #then update the x value to the beginning of that region
                  {window_x_min$x <- probTwilights()$tFirst[probTwilights()$tFirst>window_x_min$x][1]
                  updateSliderInput(session,
-                                   "dateslider",
+                                   "dateslider_input",
                                    value = window_x_min$x)}
                  
                })
@@ -663,7 +670,7 @@ shinyModule <- function(input, output, session, data) {
                    #then update the x value to the beginning of that region
                  {window_x_min$x <- probTwilights()$tFirst[probTwilights()$tFirst<window_x_min$x][1]
                  updateSliderInput(session,
-                                   "dateslider",
+                                   "dateslider_input",
                                    value = window_x_min$x)}
                })
   
