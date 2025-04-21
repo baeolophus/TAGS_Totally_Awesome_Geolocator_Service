@@ -146,7 +146,7 @@ shinyModuleUserInterface <- function(id, label) {
                                height = "150px")),
         
         
-        ########### Input slider for dates ########## 
+        ########### Input slider and date units for edit window ########## 
         # based on reactive dataframe.
         #https://stackoverflow.com/questions/18700589/interactive-reactive-change-of-min-max-values-of-sliderinput
         
