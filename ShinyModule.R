@@ -148,7 +148,9 @@ shinyModuleUserInterface <- function(id, label) {
         
         ########### Input slider and date units for edit window ########## 
         # based on reactive dataframe.
+        
         #https://stackoverflow.com/questions/18700589/interactive-reactive-change-of-min-max-values-of-sliderinput
+        #I believe this needs to do the output$dateslider_render https://r-craft.org/introduction-to-r-shiny-reactivity-with-hands-on-examples/
         
         uiOutput(ns("dateslider_render")),
         
@@ -363,10 +365,10 @@ shinyModule <- function(input, output, session, data) {
   #create a user interface dynamic slider based on reactive data
   #shows where the start of the editing window is located and changed with that change in value.
   output$dateslider_render <- renderUI({
-    print(paste("sliderInput original value at 366:", 
+    print(paste("sliderInput default value should be at 366:", 
                 min(data$timestamp, na.rm = TRUE)))
-    sliderInput("dateslider_input",
-                "Start date/time of editing window",
+    sliderInput(inputId = "dateslider_input",
+                label = "Start date/time of editing window",
                 min = min(data$timestamp, na.rm = TRUE),
                 max = max(data$timestamp, na.rm = TRUE),
                 value = min(data$timestamp, na.rm = TRUE), #This sets the initial range to first two days of the dataset
@@ -377,7 +379,8 @@ shinyModule <- function(input, output, session, data) {
   
   
   # Create a reactive value that can be updated when slider changes and used in later plots
-  window_x_min <- reactiveValues(  x = NULL)
+  # with a default value of min of dataset
+  window_x_min <- reactiveValues(  x = min(data$timestamp, na.rm = TRUE))
 
   
   #Set the value of the left side of the editing window as a reactive that can change
@@ -390,7 +393,7 @@ shinyModule <- function(input, output, session, data) {
   
   
     observe({
-      
+    val <- input$dateslider_input  
     print(paste0("Value of dateslider value at 394, when it is 'observe'd is ", 
                    input$dateslider_input, 
                  "and value of window_x_min$x is ",
