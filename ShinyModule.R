@@ -130,6 +130,18 @@ shinyModuleUserInterface <- function(id, label) {
       ),
       mainPanel(
         
+        # testing slider header
+        
+        h2("Testing slider"),
+        sliderInput(inputId = "simple_test_number_slider",
+                    label = "slider testing",
+                    min = 1,
+                    max = 4,
+                    value = 2,
+                    width = '100%'),
+        
+        withSpinner(plotOutput(ns("slider_value"))),
+        
         ########### Plot raw unannotated data ########### 
         h2("Test plot that data input works"),
         withSpinner(plotOutput(ns("plot_datainput"),
@@ -248,6 +260,16 @@ shinyModule <- function(input, output, session, data) {
   
   ##--## example code - choose which individual to plot ##--## 
   
+  # confirm value of test slider
+  sliderVal <- reactive({data.frame(x = input$simple_test_number_slider)})
+  output$slider_value <- renderPlot({
+    ggplot()+
+      geom_point(data = sliderVal(),
+                 mapping = aes(x = x,
+                               y = 1))
+  })
+  
+  
   output$plot_datainput <- renderPlot({
     ggplot() + 
       geom_line(data = data, 
@@ -364,23 +386,26 @@ shinyModule <- function(input, output, session, data) {
   ######################### Show date/time slider for edit window ########## 
   #create a user interface dynamic slider based on reactive data
   #shows where the start of the editing window is located and changed with that change in value.
-  output$dateslider_render <- renderUI({
-    print(paste("sliderInput default value should be at 366:", 
-                min(data$timestamp, na.rm = TRUE)))
-    sliderInput(inputId = "dateslider_input",
+  min_slider <- min(data$timestamp, na.rm = TRUE)
+  max_slider <- max(data$timestamp, na.rm = TRUE)
+  
+    output$dateslider_render <- renderUI(expr = {
+      sliderInput(inputId = "dateslider_input",
                 label = "Start date/time of editing window",
-                min = min(data$timestamp, na.rm = TRUE),
-                max = max(data$timestamp, na.rm = TRUE),
-                value = min(data$timestamp, na.rm = TRUE), #This sets the initial range to first two days of the dataset
+                min = 1,
+                max = 3,
+                value = 2, #This sets the initial range to first two days of the dataset
                 width = '100%')
     
     
   })
   
-  
+    
+
   # Create a reactive value that can be updated when slider changes and used in later plots
   # with a default value of min of dataset
-  window_x_min <- reactiveValues(  x = min(data$timestamp, na.rm = TRUE))
+  window_x_min <- reactiveValues(  x = min_slider)
+  
 
   
   #Set the value of the left side of the editing window as a reactive that can change
@@ -398,7 +423,7 @@ shinyModule <- function(input, output, session, data) {
                    input$dateslider_input, 
                  "and value of window_x_min$x is ",
                  window_x_min$x))
-    window_x_min$x <- input$dateslider_input
+    window_x_min$x <- val
     
     print(paste0("Length of dateslider_input value at 398, after window_x is updated is", 
                  length(input$dateslider_input),
