@@ -133,21 +133,21 @@ shinyModuleUserInterface <- function(id, label) {
         # testing slider header
         
         h2("Testing slider"),
-        sliderInput(inputId = "simple_test_number_slider",
+        sliderInput(inputId = ns("simple_test_number_slider"),
                     label = "slider testing",
                     min = 1,
                     max = 4,
                     value = 2,
                     width = '100%'),
         
-        withSpinner(plotOutput(ns("slider_value"))),
+        verbatimTextOutput(ns("slider_value")),
         
-        ########### Plot raw unannotated data ########### 
-        h2("Test plot that data input works"),
-        withSpinner(plotOutput(ns("plot_datainput"),
-                               height = "150px")),
-        
-        DTOutput(ns('twilights_preview')),
+        # ########### Plot raw unannotated data ########### 
+        # h2("Test plot that data input works"),
+        # withSpinner(plotOutput(ns("plot_datainput"),
+        #                        height = "150px")),
+        # 
+        # DTOutput(ns('twilights_preview')),
         ########### Plot problem areas ########### 
         h2("Step 5. Find problem areas and edit your data"),
         p("This plot shows all of your data with problem areas highlighted in red boxes and the location of the editing window shown in gray."),
@@ -165,7 +165,7 @@ shinyModuleUserInterface <- function(id, label) {
         #I believe this needs to do the output$dateslider_render https://r-craft.org/introduction-to-r-shiny-reactivity-with-hands-on-examples/
         
         uiOutput(ns("dateslider_render")),
-        
+        verbatimTextOutput(ns("dateslider_value")),
         p("The plot below can be edited by clicking a single data point or left-clicking and dragging your cursor to select multiple points."),
         
         radioButtons(ns("edit_units"), 
@@ -261,13 +261,8 @@ shinyModule <- function(input, output, session, data) {
   ##--## example code - choose which individual to plot ##--## 
   
   # confirm value of test slider
-  sliderVal <- reactive({data.frame(x = input$simple_test_number_slider)})
-  output$slider_value <- renderPlot({
-    ggplot()+
-      geom_point(data = sliderVal(),
-                 mapping = aes(x = x,
-                               y = 1))
-  })
+  # sliderVal <- reactive({data.frame(x = input$simple_test_number_slider)})
+  output$slider_value <- renderPrint({input$simple_test_number_slider})
   
   
   output$plot_datainput <- renderPlot({
@@ -390,17 +385,17 @@ shinyModule <- function(input, output, session, data) {
   max_slider <- max(data$timestamp, na.rm = TRUE)
   
     output$dateslider_render <- renderUI(expr = {
-      sliderInput(inputId = "dateslider_input",
+      sliderInput(inputId = ns("dateslider_input"),
                 label = "Start date/time of editing window",
-                min = 1,
-                max = 3,
-                value = 2, #This sets the initial range to first two days of the dataset
+                min = min_slider,
+                max = max_slider,
+                value = min_slider, #This sets the initial range to first two days of the dataset
                 width = '100%')
     
     
   })
   
-    
+    output$dateslider_value <- renderPrint({input$dateslider_input})
 
   # Create a reactive value that can be updated when slider changes and used in later plots
   # with a default value of min of dataset
