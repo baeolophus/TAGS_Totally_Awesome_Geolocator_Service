@@ -408,30 +408,27 @@ shinyModule <- function(input, output, session, data) {
   #Set the value of the left side of the editing window as a reactive that can change
   #with the value of the date slider.  This also allows you to change the window
   #location with the next/prev buttons.
-  #Watches for the dateslider's value (which defaults to minimum of dataset in previous code chunk) and starts the editing window there
+  # Watches for the dateslider's value (which defaults to minimum of dataset in previous code chunk) and starts the editing window there
   # Observe continually waits for any reactive variable (like sliderInput) to change
   # and can updated values of the reactiveValue window_x_min
   # details: https://stackoverflow.com/questions/53016404/advantages-of-reactive-vs-observe-vs-observeevent
   
   
     observe({
-    val <- input$dateslider_input  
-    print(paste0("Value of dateslider value at 394, when it is 'observe'd is ", 
+      window_x_min$x <- input$dateslider_input  
+      
+      # https://stackoverflow.com/questions/48284793/how-do-i-print-an-input-from-the-r-shiny-ui-to-the-console
+      # Console message to help debugging date formats in edit window
+      
+    print(paste0("Value of dateslider value at 419, when it is 'observe'd is ", 
                    input$dateslider_input, 
                  "and value of window_x_min$x is ",
                  window_x_min$x))
-    window_x_min$x <- val
-    
-    print(paste0("Length of dateslider_input value at 398, after window_x is updated is", 
-                 length(input$dateslider_input),
-                 " and window_x_min$x value is ", window_x_min$x))
   }
   )
 
 
-  # https://stackoverflow.com/questions/48284793/how-do-i-print-an-input-from-the-r-shiny-ui-to-the-console
-  # Console message to help debugging date formats in edit window
-  
+
   
   ######################### Calculate problem twilights ########## 
   #Create reactive object that calculates problem twilights.
