@@ -258,10 +258,9 @@ shinyModule <- function(input, output, session, data) {
   ns <- session$ns
   current <- reactiveVal(data)
   
-  ##--## example code - choose which individual to plot ##--## 
+  ##--## code for server goes here ##--## 
   
   # confirm value of test slider
-  # sliderVal <- reactive({data.frame(x = input$simple_test_number_slider)})
   output$slider_value <- renderPrint({input$simple_test_number_slider})
   
   
@@ -385,17 +384,20 @@ shinyModule <- function(input, output, session, data) {
   max_slider <- max(data$timestamp, na.rm = TRUE)
   
     output$dateslider_render <- renderUI(expr = {
-      sliderInput(inputId = ns("dateslider_input"),
-                label = "Start date/time of editing window",
-                min = min_slider,
-                max = max_slider,
-                value = min_slider, #This sets the initial range to first two days of the dataset
-                width = '100%')
+      sliderInput(
+        # because this is a MoveApp, the inputID has to include ns() wrapper around the slider name to be used elsewhere
+        inputId = ns("dateslider_input"),
+        label = "Start date/time of editing window",
+        min = min_slider,
+        max = max_slider,
+        value = min_slider, #This sets the initial slider value to the earliest date 
+        width = '100%')
     
     
   })
   
-    output$dateslider_value <- renderPrint({input$dateslider_input})
+    # This is a testing output to confirm input$dateslider_input works.  Commented out in working code.
+    # output$dateslider_value <- renderPrint({input$dateslider_input})
 
   # Create a reactive value that can be updated when slider changes and used in later plots
   # with a default value of min of dataset
