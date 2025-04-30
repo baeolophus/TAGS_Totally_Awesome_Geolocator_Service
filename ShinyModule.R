@@ -468,9 +468,9 @@ shinyModule <- function(input, output, session, data) {
                           threshold = input$light_threshold,
                           include = data$timestamp)
     
-    twl_rise$tSecond <- dplyr::lag(
+    twl_rise$tSecond <- dplyr::lead(
       twl_rise$Twilight,                        #column of Twilight times
-      n=1                                       #calculate from one row previous
+      n=1                                       #calculate from one row next (lead not lag)
       )
     
     
@@ -658,7 +658,7 @@ shinyModule <- function(input, output, session, data) {
   #Waits for click on Next Problem button
   observeEvent(input$click_NextProb,
                handlerExpr = {
-                 if (window_x_min$x>=max(probTwilights()$tSecond))
+                 if (window_x_min$x>=max(probTwilights()$tSecond, na.rm = TRUE))
                    #if current value of x axis is equal to or greater than the
                    #the maximum x axis location of any problem, then it does not move and
                    #shows a notification alerting the user.
@@ -668,9 +668,9 @@ shinyModule <- function(input, output, session, data) {
                                     duration = NULL)
                  }
                  else
-                   #if first of the next problem values is greater than the current location,
+                   #if first of the next problem values is greater than or equal to than the current location,
                    #then update the x value to the beginning of that region
-                 {window_x_min$x <- probTwilights()$tFirst[probTwilights()$tFirst>window_x_min$x][1]
+                 {window_x_min$x <- probTwilights()$Twilight[probTwilights()$Twilight>=window_x_min$x][1] 
                  updateSliderInput(session,
                                    "dateslider_input",
                                    value = window_x_min$x)}
@@ -678,7 +678,7 @@ shinyModule <- function(input, output, session, data) {
                })
   observeEvent(input$click_PrevProb,
                handlerExpr = {
-                 if (window_x_min$x<=min(probTwilights()$tFirst, na.rm = TRUE))
+                 if (window_x_min$x<=min(probTwilights()$Twilight, na.rm = TRUE)) # formerly named tFirst
                    #if current value of x axis is equal to or less than the
                    #the minimum x axis location of any problem, then it does not move and
                    #shows a notification alerting the user.
@@ -690,7 +690,7 @@ shinyModule <- function(input, output, session, data) {
                  else
                    #if first of the previous problem values is less than the current location,
                    #then update the x value to the beginning of that region
-                 {window_x_min$x <- probTwilights()$tFirst[probTwilights()$tFirst<window_x_min$x][1]
+                 {window_x_min$x <- probTwilights()$Twilight[probTwilights()$Twilight<window_x_min$x][1] # formerly named tFirst
                  updateSliderInput(session,
                                    "dateslider_input",
                                    value = window_x_min$x)}
@@ -780,7 +780,7 @@ shinyModule <- function(input, output, session, data) {
     #(it has no accounting for exclusion except to assume excluded = FALSE)
     gl_twl <- edited_twilights() #Get edited twilights
     raw$twilight <- 0
-    twl <- data.frame(datetime = as.POSIXct(c(gl_twl$tFirst, 
+    twl <- data.frame(datetime = as.POSIXct(c(gl_twl$Twilight, # formerly named tFirst
                                               gl_twl$tSecond), "UTC"), 
                       twilight = c(gl_twl$type,
                                    ifelse(gl_twl$type == 1, 2, 1)))
@@ -804,7 +804,7 @@ shinyModule <- function(input, output, session, data) {
     
     #now merge in original twilights and note as excluded, as FlightR at least will account for that.
     gl_twl2 <- twl()[[2]]
-    twl2 <- data.frame(datetime = as.POSIXct(c(gl_twl2$tFirst, 
+    twl2 <- data.frame(datetime = as.POSIXct(c(gl_twl2$Twilight, # formerly named tFirst
                                                gl_twl2$tSecond), "UTC"), 
                        twilight = c(gl_twl2$type,
                                     ifelse(gl_twl2$type == 1, 2, 1)))
@@ -860,7 +860,7 @@ shinyModule <- function(input, output, session, data) {
   #Get coordinates for all consecutive twilights.
   coord <- reactive({
     ctwl <- edited_twilights()
-    coord <- GeoLight::coord(tFirst = ctwl$tFirst,
+    coord <- GeoLight::coord(tFirst = ctwl$Twilight, # formerly named tFirst, left old name since it's the GeoLight format for consistency (will see if need to change later.)
                              tSecond = ctwl$tSecond,
                              type = ctwl$type,
                              degElevation=input$sunangle)
