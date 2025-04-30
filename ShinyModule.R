@@ -130,24 +130,24 @@ shinyModuleUserInterface <- function(id, label) {
       ),
       mainPanel(
         
-        # testing slider header
-        
-        h2("Testing slider"),
-        sliderInput(inputId = ns("simple_test_number_slider"),
-                    label = "slider testing",
-                    min = 1,
-                    max = 4,
-                    value = 2,
-                    width = '100%'),
-        
-        verbatimTextOutput(ns("slider_value")),
+        # # testing slider header
+        # 
+        # h2("Testing slider"),
+        # sliderInput(inputId = ns("simple_test_number_slider"),
+        #             label = "slider testing",
+        #             min = 1,
+        #             max = 4,
+        #             value = 2,
+        #             width = '100%'),
+        # 
+        # verbatimTextOutput(ns("slider_value")),
         
         # ########### Plot raw unannotated data ########### 
         # h2("Test plot that data input works"),
         # withSpinner(plotOutput(ns("plot_datainput"),
         #                        height = "150px")),
         # 
-        # DTOutput(ns('twilights_preview')),
+        DTOutput(ns('twilights_preview')),
         ########### Plot problem areas ########### 
         h2("Step 5. Find problem areas and edit your data"),
         p("This plot shows all of your data with problem areas highlighted in red boxes and the location of the editing window shown in gray."),
@@ -194,6 +194,10 @@ shinyModuleUserInterface <- function(id, label) {
                      id = "plotselected_brush"
                    )
         ),
+        
+        h3("Next problems table for troubleshooting"),
+        # # Testing table to see what next problems are after window_x_min$x (the edge of the edit window)0
+        # DTOutput(ns("next_problems_table")),
         ########### Buttons to toggle edits ########### 
         #buttons to toggle editing plot points selected by a box.
         actionButton(ns("exclude_toggle"), "Toggle currently selected points"),
@@ -523,8 +527,8 @@ shinyModule <- function(input, output, session, data) {
                  col = "orange") +
     #draw red boxes around problem twilights
     geom_rect(data = probTwilights(),
-              mapping = aes(xmin = tSecond, #smaller one is tSecond
-                            xmax = Twilight,#larger value is Twilight
+              mapping = aes(xmin = Twilight,
+                            xmax = tSecond,
                             ymin = -Inf,
                             ymax = Inf),
               col = "red",
@@ -602,8 +606,8 @@ shinyModule <- function(input, output, session, data) {
       geom_hline(yintercept = input$light_threshold,
                  col = "orange")  +
       geom_rect(data = probTwilights(),
-                mapping = aes(xmin = tSecond, #smaller one is tSecond
-                              xmax = Twilight,#larger value is Twilight
+                mapping = aes(xmin = Twilight,
+                              xmax = tSecond,
                               ymin = -Inf,
                               ymax = Inf),
                 col = "red",
@@ -668,9 +672,9 @@ shinyModule <- function(input, output, session, data) {
                                     duration = NULL)
                  }
                  else
-                   #if first of the next problem values is greater than or equal to than the current location,
+                   #if a problem value in tFirst (now Twilights) exists that is greater than the current location,
                    #then update the x value to the beginning of that region
-                 {window_x_min$x <- probTwilights()$Twilight[probTwilights()$Twilight>=window_x_min$x][1] 
+                 {window_x_min$x <- probTwilights()$Twilight[probTwilights()$Twilight>window_x_min$x][1] 
                  updateSliderInput(session,
                                    "dateslider_input",
                                    value = window_x_min$x)}
@@ -696,6 +700,10 @@ shinyModule <- function(input, output, session, data) {
                                    value = window_x_min$x)}
                })
   
+  
+  # # Troubleshooting table to show next problem start twilights, comment out when not in development
+  # output$next_problems_table <- renderDT(probTwilights()[probTwilights()$Twilight>=window_x_min$x, "Twilight"][1],
+  #                                      server = TRUE)
   
   ################### Table showing excluded values ########## 
   #A table to show what values you have excluded
