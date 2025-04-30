@@ -674,7 +674,7 @@ shinyModule <- function(input, output, session, data) {
                  else
                    #if a problem value in tFirst (now Twilights) exists that is greater than the current location,
                    #then update the x value to the beginning of that region
-                 {window_x_min$x <- probTwilights()$Twilight[probTwilights()$Twilight>window_x_min$x][1] 
+                 {window_x_min$x <- probTwilights()$tSecond[probTwilights()$Twilight>window_x_min$x][1] 
                  updateSliderInput(session,
                                    "dateslider_input",
                                    value = window_x_min$x)}
