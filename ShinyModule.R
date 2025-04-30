@@ -662,7 +662,7 @@ shinyModule <- function(input, output, session, data) {
   #Waits for click on Next Problem button
   observeEvent(input$click_NextProb,
                handlerExpr = {
-                 if (window_x_min$x>=max(probTwilights()$tSecond, na.rm = TRUE))
+                 if (window_x_min$x>=max(probTwilights()$Twilight, na.rm = TRUE))
                    #if current value of x axis is equal to or greater than the
                    #the maximum x axis location of any problem, then it does not move and
                    #shows a notification alerting the user.
