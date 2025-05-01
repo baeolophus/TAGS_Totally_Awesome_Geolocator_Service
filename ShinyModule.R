@@ -673,7 +673,7 @@ shinyModule <- function(input, output, session, data) {
                  }
                  else
                    #if a problem value in tFirst (now Twilights) exists that is greater than the current location,
-                   #then update the x value to the beginning of that region
+                   #then update the x value to the beginning of that next region (tSecond is the start of the next Twilight row)
                  {window_x_min$x <- probTwilights()$tSecond[probTwilights()$Twilight>window_x_min$x][1] 
                  updateSliderInput(session,
                                    "dateslider_input",
@@ -692,9 +692,10 @@ shinyModule <- function(input, output, session, data) {
                                     duration = NULL)
                  }
                  else
-                   #if first of the previous problem values is less than the current location,
-                   #then update the x value to the beginning of that region
-                 {window_x_min$x <- probTwilights()$Twilight[probTwilights()$Twilight<window_x_min$x][1] # formerly named tFirst
+                   #if the end of a problem box is less than the current edit window x value,
+                   #then update the x value to the most recent (max) of problem box's value.
+                 {window_x_min$x <- max(probTwilights()$Twilight[probTwilights()$tSecond<window_x_min$x],
+                                         na.rm = TRUE)
                  updateSliderInput(session,
                                    "dateslider_input",
                                    value = window_x_min$x)}
