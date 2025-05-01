@@ -189,9 +189,9 @@ shinyModuleUserInterface <- function(id, label) {
         ############################## Plot editing window ########## 
         # that is zoomed in enough to see and edit individual points.
         plotOutput(ns("plotselected"),
-                   click = "plotselected_click",
+                   click = ns("plotselected_click"),
                    brush = brushOpts(
-                     id = "plotselected_brush"
+                     id = ns("plotselected_brush")
                    )
         ),
         
