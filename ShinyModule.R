@@ -101,7 +101,7 @@ shinyModuleUserInterface <- function(id, label) {
         #Enter a value for sun angle.
         #Or, this is also where calculated value appears if you press actionButton "calculate"
         numericInput(ns("sunangle"), "Sun angle", value = 0),
-        actionButton("calculate", "Calculate sun angle from data"),
+        actionButton(ns("calculate"), "Calculate sun angle from data"),
         br(),
         ########### Light Threshold Entry ########### 
         h3("Step 3. Light threshold entry"),
@@ -749,12 +749,30 @@ shinyModule <- function(input, output, session, data) {
 
 
   calib <- reactive ({
-    consecTwilights <- twl()[[2]]
-    calib <- subset(consecTwilights,
-                    (as.numeric(as.Date(consecTwilights$tSecond)) < as.numeric(input$stop_calib_date))&
-                      (as.numeric(as.Date(consecTwilights$Twilight)) > as.numeric(input$start_calib_date))
+    # consecTwilights <- twl()[[2]]
+    
+    
+    
+    #the dates need to not be near equinox
+    #https://github.com/slisovski/GeoLight/issues/3
+    
+    
+    calib <- subset(twl(), # I think consecTwilights can be replaced with just the twilight data table
+                    (as.numeric(as.Date(twl()$tSecond)) < as.numeric(input$stop_calib_date))&
+                      (as.numeric(as.Date(twl()$Twilight)) > as.numeric(input$start_calib_date))
 
     )
+    
+    
+    # Rise = TRUE, sunrise = 1 per getElevation documentation
+    calib$type[twl_rise$Rise==TRUE] <- 1
+    
+    # sunset = 2 per getElevation documentation
+    calib$type[twl_rise$Rise==FALSE] <- 2
+    
+    #sometimes the subset adds in NA's somehow
+    calib <- na.omit(calib)
+    
     return(calib)
 
   })
@@ -763,13 +781,25 @@ shinyModule <- function(input, output, session, data) {
   #value for sun angle and updates the number input's manually entered entry.
   observeEvent(input$calculate, {
     elev <- NA
-    elev <- getElevation(calib()$Twilight,
-                         calib()$tSecond,
-                         calib()$type,
-                         known.coord=c(input$calib_lon,
-                                       input$calib_lat) )[[1]]
-    #the [[1]] is necessary to pull out just the median sun angle
-    #and not the rest of the values from this function
+
+
+    GeoLight::getElevation(tFirst = calib$Twilight,
+                           tSecond = calib$tSecond,
+                           type = calib$type,
+                           method = "gamma", plot = FALSE,
+                           known.coord=c(lon.calib,
+                                         lat.calib))[[2]]
+    
+    
+    # probably/hopefully sticking with getElevation?
+    # elev <- thresholdCalibration(twilight = calib()$Twilight,
+    #                      rise = calib()$Rise,
+    #                      lon = input$calib_lon,
+    #                      lat = input$calib_lat,
+    #                      plot = FALSE)[[2]]
+    #the [[2]] is necessary to pull out just the median sun elevation angle (90-zenith a la https://geolocationmanual.vogelwarte.ch/SGAT.html#calibration-1)
+    #and not the rest of the values from the Geolight::getElevation function
+    
     #updateNumericInput puts the newly calculated value into the numeric input field for sunangle.
     updateNumericInput(session,
                        "sunangle",
