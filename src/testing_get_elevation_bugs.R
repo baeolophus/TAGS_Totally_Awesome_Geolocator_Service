@@ -24,8 +24,8 @@ calib <- na.omit(twl_rise[
 #https://github.com/slisovski/GeoLight/issues/3
 
 
-lat.calib <-  33.9
-lon.calib <- -96.8
+lat.calib <-  15
+lon.calib <-  78
 
 elev <- GeoLight::getElevation(tFirst = calib$Twilight,
                      tSecond = calib$tSecond,
@@ -33,3 +33,6 @@ elev <- GeoLight::getElevation(tFirst = calib$Twilight,
                      method = "gamma", plot = FALSE,
                      known.coord=c(lon.calib,
                                    lat.calib))
+
+
+calib <- thresholdCalibration(calib$Twilight, calib$Rise, lon.calib, lat.calib, method = "gamma")
