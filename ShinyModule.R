@@ -82,27 +82,27 @@ shinyModuleUserInterface <- function(id, label) {
         #                      ".lig",
         #                      ".lux")
         # ),
-        # br(), #linebreak
-        # h3("Step 2. Calibration period information"),
-        # numericInput(ns("calib_lon"), 
-        #              h4("Calibration longitude"), 
-        #              value = 0, #default value
-        #              step = 0.00001), #"steps" with arrow buttons.
-        # numericInput(ns("calib_lat"), 
-        #              h4("Calibration latitude"), 
-        #              value = 0,
-        #              step = 0.00001),
-        # dateInput(ns("start_calib_date"), 
-        #           h4("Calibration start date"), 
-        #           value = NULL),
-        # dateInput(ns("stop_calib_date"), 
-        #           h4("Calibration stop date"), 
-        #           value = NULL),
-        # #Enter a value for sun angle. 
-        # #Or, this is also where calculated value appears if you press actionButton "calculate"
-        # numericInput(ns("sunangle"), "Sun angle", value = 0),
-        # actionButton("calculate", "Calculate sun angle from data"),
-        # br(),
+        br(), #linebreak
+        h3("Step 2. Calibration period information"),
+        numericInput(ns("calib_lon"),
+                     h4("Calibration longitude"),
+                     value = 0, #default value
+                     step = 0.00001), #"steps" with arrow buttons.
+        numericInput(ns("calib_lat"),
+                     h4("Calibration latitude"),
+                     value = 0,
+                     step = 0.00001),
+        dateInput(ns("start_calib_date"),
+                  h4("Calibration start date"),
+                  value = NULL),
+        dateInput(ns("stop_calib_date"),
+                  h4("Calibration stop date"),
+                  value = NULL),
+        #Enter a value for sun angle.
+        #Or, this is also where calculated value appears if you press actionButton "calculate"
+        numericInput(ns("sunangle"), "Sun angle", value = 0),
+        actionButton("calculate", "Calculate sun angle from data"),
+        br(),
         ########### Light Threshold Entry ########### 
         h3("Step 3. Light threshold entry"),
         p("Be sure to enter a value within the range of your data. For example, if the values of light in your dataset range from 40 to 200, you will need to increase the light threshold to a value between 40 and 200"),
@@ -745,36 +745,39 @@ shinyModule <- function(input, output, session, data) {
     return(edited_twilights)
   })
   
-  # ################## Deprecated: Calibration/computation of sun elevation angle from calibration data.##################
-  # 
-  # 
-  # calib <- reactive ({
-  #   consecTwilights <- twl()[[2]]
-  #   calib <- subset(consecTwilights,
-  #                   (as.numeric(as.Date(consecTwilights$tSecond)) < as.numeric(input$stop_calib_date))&
-  #                     (as.numeric(as.Date(consecTwilights$tFirst)) > as.numeric(input$start_calib_date))  
-  #                   
-  #   )
-  #   return(calib)
-  #   
-  # })
-  # 
-  # #observeEvent says when you click on "calculate" it gives you a new 
-  # #value for sun angle and updates the number input's manually entered entry.
-  # observeEvent(input$calculate, {
-  #   elev <- NA
-  #   elev <- getElevation(calib()$tFirst,
-  #                        calib()$tSecond, 
-  #                        calib()$type,
-  #                        known.coord=c(input$calib_lon,
-  #                                      input$calib_lat) )[[1]]
-  #   #the [[1]] is necessary to pull out just the median sun angle 
-  #   #and not the rest of the values from this function
-  #   #updateNumericInput puts the newly calculated value into the numeric input field for sunangle.
-  #   updateNumericInput(session,
-  #                      "sunangle", 
-  #                      value = as.numeric(elev))
-  # })
+  ################## Calibration/computation of sun elevation angle from calibration data.##################
+
+
+  calib <- reactive ({
+    consecTwilights <- twl()[[2]]
+    calib <- subset(consecTwilights,
+                    (as.numeric(as.Date(consecTwilights$tSecond)) < as.numeric(input$stop_calib_date))&
+                      (as.numeric(as.Date(consecTwilights$tFirst)) > as.numeric(input$start_calib_date))
+
+    )
+    return(calib)
+
+  })
+
+  #observeEvent says when you click on "calculate" it gives you a new
+  #value for sun angle and updates the number input's manually entered entry.
+  observeEvent(input$calculate, {
+    elev <- NA
+    elev <- getElevation(calib()$tFirst,
+                         calib()$tSecond,
+                         calib()$type,
+                         known.coord=c(input$calib_lon,
+                                       input$calib_lat) )[[1]]
+    #the [[1]] is necessary to pull out just the median sun angle
+    #and not the rest of the values from this function
+    #updateNumericInput puts the newly calculated value into the numeric input field for sunangle.
+    updateNumericInput(session,
+                       "sunangle",
+                       value = as.numeric(elev))
+  })
+
+  
+  
   
   ################## Create TAGS format including interpolations ########## 
   #Get to TAGS format by including interpolations
