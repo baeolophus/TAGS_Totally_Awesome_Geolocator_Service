@@ -752,7 +752,7 @@ shinyModule <- function(input, output, session, data) {
     consecTwilights <- twl()[[2]]
     calib <- subset(consecTwilights,
                     (as.numeric(as.Date(consecTwilights$tSecond)) < as.numeric(input$stop_calib_date))&
-                      (as.numeric(as.Date(consecTwilights$tFirst)) > as.numeric(input$start_calib_date))
+                      (as.numeric(as.Date(consecTwilights$Twilight)) > as.numeric(input$start_calib_date))
 
     )
     return(calib)
@@ -763,7 +763,7 @@ shinyModule <- function(input, output, session, data) {
   #value for sun angle and updates the number input's manually entered entry.
   observeEvent(input$calculate, {
     elev <- NA
-    elev <- getElevation(calib()$tFirst,
+    elev <- getElevation(calib()$Twilight,
                          calib()$tSecond,
                          calib()$type,
                          known.coord=c(input$calib_lon,
