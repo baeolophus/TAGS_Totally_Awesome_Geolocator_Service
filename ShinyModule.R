@@ -783,14 +783,14 @@ shinyModule <- function(input, output, session, data) {
     elev <- NA
 
 
-    GeoLight::getElevation(tFirst = calib$Twilight,
+    elev <- GeoLight::getElevation(tFirst = calib$Twilight,
                            tSecond = calib$tSecond,
                            type = calib$type,
                            method = "gamma", plot = FALSE,
                            known.coord=c(lon.calib,
                                          lat.calib))[[2]]
     
-    
+
     # probably/hopefully sticking with getElevation?
     # elev <- thresholdCalibration(twilight = calib()$Twilight,
     #                      rise = calib()$Rise,
