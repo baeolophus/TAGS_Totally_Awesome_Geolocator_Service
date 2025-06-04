@@ -14,10 +14,10 @@ twl_rise$geolight_sunrise_is_1[twl_rise$Rise==FALSE] <- 2
 
 calib <- na.omit(twl_rise[
   #stop date
-                (as.numeric(as.Date(twl_rise$tSecond)) < (as.numeric(as.Date("2015-12-24"))))&
+                (as.numeric(as.Date(twl_rise$tSecond)) > (as.numeric(as.Date("2015-12-24"))))&
                   
                   # start date
-                  (as.numeric(as.Date(twl_rise$Twilight)) > as.numeric(as.Date("2016-01-21"))),])
+                  (as.numeric(as.Date(twl_rise$Twilight)) < as.numeric(as.Date("2016-01-21"))),])
 
 
 #filter dates

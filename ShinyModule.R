@@ -758,17 +758,17 @@ shinyModule <- function(input, output, session, data) {
     
     
     calib <- subset(twl(), # I think consecTwilights can be replaced with just the twilight data table
-                    (as.numeric(as.Date(twl()$tSecond)) < as.numeric(input$stop_calib_date))&
-                      (as.numeric(as.Date(twl()$Twilight)) > as.numeric(input$start_calib_date))
+                    (as.numeric(as.Date(twl()$tSecond)) > as.numeric(input$start_calib_date))&
+                      (as.numeric(as.Date(twl()$Twilight)) < as.numeric(input$stop_calib_date))
 
     )
     
     
     # Rise = TRUE, sunrise = 1 per getElevation documentation
-    calib$type[twl_rise$Rise==TRUE] <- 1
+    calib$type[calib$Rise==TRUE] <- 1
     
     # sunset = 2 per getElevation documentation
-    calib$type[twl_rise$Rise==FALSE] <- 2
+    calib$type[calib$Rise==FALSE] <- 2
     
     #sometimes the subset adds in NA's somehow
     calib <- na.omit(calib)
@@ -782,13 +782,17 @@ shinyModule <- function(input, output, session, data) {
   observeEvent(input$calculate, {
     elev <- NA
 
+    # lat.calib <-  10
+    # lon.calib <-  -20
+    # "2015-12-24"
+    # "2016-01-21"
 
-    elev <- GeoLight::getElevation(tFirst = calib$Twilight,
-                           tSecond = calib$tSecond,
-                           type = calib$type,
+    elev <- GeoLight::getElevation(tFirst = calib()$Twilight,
+                           tSecond = calib()$tSecond,
+                           type = calib()$type,
                            method = "gamma", plot = FALSE,
-                           known.coord=c(lon.calib,
-                                         lat.calib))[[2]]
+                           known.coord=c(input$calib_lon,
+                                         input$calib_lat))[[2]]
     
 
     # probably/hopefully sticking with getElevation?
