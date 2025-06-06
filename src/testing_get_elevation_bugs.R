@@ -8,8 +8,8 @@ twl_rise$tSecond <- dplyr::lead(
   n=1                                       #calculate from one row next (lead not lag)
 )
 
-twl_rise$geolight_sunrise_is_1[twl_rise$Rise==TRUE] <- 1
-twl_rise$geolight_sunrise_is_1[twl_rise$Rise==FALSE] <- 2
+twl_rise$type[twl_rise$Rise==TRUE] <- 1
+twl_rise$type[twl_rise$Rise==FALSE] <- 2
 
 
 calib <- na.omit(twl_rise[
@@ -31,12 +31,17 @@ lon.calib <-  -20
 
 elev <- GeoLight::getElevation(tFirst = calib$Twilight,
                      tSecond = calib$tSecond,
-                     type = calib$geolight_sunrise_is_1,
+                     type = calib$type,
                      method = "gamma", plot = FALSE,
                      known.coord=c(lon.calib,
                                    lat.calib))
 
 elev[[2]]
+
+coord <- GeoLight::coord(tFirst = twl_rise$Twilight, # formerly named tFirst, left old name since it's the GeoLight format for consistency (will see if need to change later.)
+                         tSecond = twl_rise$tSecond,
+                         type = twl_rise$type,
+                         degElevation=elev[[2]])
 
 library(TwGeos)
 library(SGAT)
