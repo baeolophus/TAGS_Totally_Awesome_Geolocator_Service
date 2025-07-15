@@ -748,7 +748,10 @@ shinyModule <- function(input, output, session, data) {
                                                            Light = geolocatordata_keep()[geolocatordata_keep()$excluded == FALSE,
                                                                                          "light_level"]), 
                                       threshold = input$light_threshold,
-                                      include = geolocatordata_keep()$timestamp)
+                                      include = geolocatordata_keep()[geolocatordata_keep()$excluded == FALSE,
+                                                                      "timestamp"])
+    
+    #should this be a not just twilights dataset?  findTwilights generates that only, and allTwilights=FALSE means something.
     
     edited_twilights$tSecond <- dplyr::lead(
       edited_twilights$Twilight,                        #column of Twilight times
@@ -801,8 +804,8 @@ shinyModule <- function(input, output, session, data) {
   observeEvent(input$calculate, {
     elev <- NA
 
-    # lat.calib <-  10
     # lon.calib <-  -20
+    # lat.calib <-  10
     # "2015-12-24"
     # "2016-01-21"
 
@@ -923,14 +926,14 @@ shinyModule <- function(input, output, session, data) {
   #constantly and using more server time.
   
   #Get coordinates for all consecutive twilights.
-  coord <- reactive({
-    ctwl <- edited_twilights()
-    coord <- GeoLight::coord(tFirst = ctwl$Twilight, # formerly named tFirst, left old name since it's the GeoLight format for consistency (will see if need to change later.)
-                             tSecond = ctwl$tSecond,
-                             type = ctwl$type,
+  coord.m <- reactive({
+    #ctwl <- edited_twilights()
+    coord.m <- GeoLight::coord(tFirst = edited_twilights()$Twilight, # formerly named tFirst, left old name since it's the GeoLight format for consistency (will see if need to change later.)
+                             tSecond = edited_twilights()$tSecond,
+                             type = edited_twilights()$type,
                              degElevation=input$sunangle)
-    coord.df <- data.frame(coord)
-    coord.df$long <- coord.df$lon #rename default to match what addMarkers in leaflet() lines below requires.
+    coord.df <- data.frame(coord.m)
+    coord.df$lng <- coord.df$lon #rename default to match what addMarkers in leaflet() lines below requires.
     coord.df$lon <- NULL #delete old column
     return(coord.df)
   })
@@ -942,11 +945,10 @@ shinyModule <- function(input, output, session, data) {
       #run the leaflet function
       leaflet() %>%
         #add map tiles
-        addProviderTiles(provider = "Stamen.TonerLite",
-                         options = providerTileOptions(noWrap = TRUE)
-        ) %>%
+        addTiles() %>%
         #add the calculated coordinates based on edited twilights
-        addMarkers(data = coord())
+        addMarkers(lng = coord.m()$lng,
+                   lat = coord.m()$lat)
     })
   })
   
