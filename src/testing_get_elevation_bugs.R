@@ -63,6 +63,15 @@ m <- leaflet() %>%
 
 m
 
+options(viewer = NULL) # view in browser
+
+library(leafgl)
+
+leaflet() %>%
+  addProviderTiles(provider = providers$CartoDB.DarkMatter) %>%
+  addGlPoints(data = coord.sf)
+
+
   
   #add the calculated coordinates based on edited twilights
 map_1 <- m %>%
@@ -84,9 +93,15 @@ coord.sf <- st_as_sf(na.omit(coord.df), coords = c("lng", "lat"), crs = 4326)
 #suggests mapview as an alternative or clustering (which is probably not good for this use case?)
 #or this: https://github.com/r-spatial/leafgl
 
-mapview(coord.sf, legend = FALSE)
+mapview(head(coord.sf), legend = FALSE)
 
 #https://stackoverflow.com/questions/65485747/mapview-points-not-showing-in-r
 
 #https://stackoverflow.com/questions/36679944/mapview-for-shiny#36682268
 #https://www.spsanderson.com/steveondata/posts/rtip-2023-05-04/index.html
+
+
+library(mapgl)
+maplibre(style = carto_style("positron")) %>%
+  fit_bounds(coord.sf, animate = FALSE) %>%
+  add_markers(data = head(coord.sf, 200))
