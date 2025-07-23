@@ -68,7 +68,7 @@ options(viewer = NULL) # view in browser
 library(leafgl)
 
 leaflet() %>%
-  addProviderTiles(provider = providers$CartoDB.DarkMatter) %>%
+  addProviderTiles(provider = "Stadia.StamenTerrain") %>%
   addGlPoints(data = coord.sf)
 
 
