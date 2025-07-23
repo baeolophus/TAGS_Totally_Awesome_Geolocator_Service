@@ -7,10 +7,12 @@ library(dplyr)
 library(DT)
 library(FLightR)
 library(ggplot2)
+library(leafgl)
 library(leaflet)
 library(lubridate)
 library(move2)
 library(scales)
+library(sf)
 library(shinycssloaders)
 library(TwGeos)
 
@@ -226,8 +228,9 @@ shinyModuleUserInterface <- function(id, label) {
         
         ########### Generate map from edited data ########### 
         actionButton(ns("update_map"), "6B. Generate map from edited twilights"),
-        #Map showing calculated coordinates from sunrise/sunset times.
-        leafletOutput(ns("mymap")),
+        #Map showing calculated coordinates from sunrise/sunset times using
+        # leafgl https://r-spatial.github.io/leafgl/reference/glify-shiny.html
+        leafglOutput(ns("mymap")),
         br(),
         
         ########### Data download buttons ########### 
@@ -935,21 +938,35 @@ shinyModule <- function(input, output, session, data) {
     coord.df <- data.frame(coord.m)
     coord.df$lng <- coord.df$lon #rename default to match what addMarkers in leaflet() lines below requires.
     coord.df$lon <- NULL #delete old column
-    return(coord.df)
+    #https://tmieno2.github.io/R-as-GIS-for-Economists/turning-a-data-frame-of-points-into-an-sf.html
+    coord.sf <- st_as_sf(na.omit(coord.df),
+                         coords = c("lng", "lat"),
+                         crs = 4326 # https://spatialreference.org/ref/epsg/4326/
+                         )
+    #run the leaflet function
+    coord.m <- leaflet() %>%
+      
+      #Using provider tile from maps.stamen.com: https://maps.stamen.com/terrain/#12/37.7706/-122.3782
+      addProviderTiles(provider = "Stadia.StamenTerrain") %>%
+      
+      #with the leafgl function to make it render better for large numbers of points, which most geolocator datasets have
+      addGlPoints(data = coord.sf)
+    
+    # leaflet() %>%
+    #   #add map tiles
+    #   addTiles() %>%
+    #   #add the calculated coordinates based on edited twilights
+    #   addMarkers(lng = coord.m()$lng,
+    #              lat = coord.m()$lat)
+  
+    return(coord.m)
   })
   
   observeEvent(input$update_map, {
-    output$mymap <- renderLeaflet({
-      
-      
-      #run the leaflet function
-      leaflet() %>%
-        #add map tiles
-        addTiles() %>%
-        #add the calculated coordinates based on edited twilights
-        addMarkers(lng = coord.m()$lng,
-                   lat = coord.m()$lat)
-    })
+    output$mymap <- renderLeafgl(
+      coord.m,
+      quoted = TRUE)
+    
   })
   
   
