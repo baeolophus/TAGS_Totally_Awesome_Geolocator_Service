@@ -963,8 +963,11 @@ shinyModule <- function(input, output, session, data) {
   })
   
   observeEvent(input$update_map, {
+    # I believe it is necessary to pull the reactive sf object into its own internal object here a la 
+    # https://stackoverflow.com/questions/76609621/how-to-use-shiny-reactive-functions-for-plotting-an-sf-object-that-mapped-a-nume
+    coord.map <- coord.m()
     output$mymap <- renderLeafgl(
-      coord.m,
+      coord.map,
       quoted = TRUE)
     
   })
