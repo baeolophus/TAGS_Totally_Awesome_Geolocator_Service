@@ -935,27 +935,39 @@ shinyModule <- function(input, output, session, data) {
   #having this isolated in observeEvent keeps it from updating
   #constantly and using more server time.
   
-  #Get coordinates for all consecutive twilights.
-  coord.m <- reactive({
+  # #Get coordinates for all consecutive twilights.
+  # coord.sf <- reactive({
+  #   
+  #   return(coord.sf)
+  # })
+  
+  
+  # errors were about leaflet not being correct type of quosure, so used rlang::inject a la https://github.com/rstudio/shiny/issues/3108
+  inject(!!observeEvent(input$update_map, {
+
     print("clicked the map button")
     et <- edited_twilights()
     
     coord.m <- GeoLight::coord(tFirst = et$Twilight, # formerly named tFirst, left old name since it's the GeoLight format for consistency (will see if need to change later.)
-                             tSecond = et$tSecond,
-                             type = et$type,
-                             degElevation=input$sunangle)
+                               tSecond = et$tSecond,
+                               type = et$type,
+                               degElevation=input$sunangle)
     coord.df <- data.frame(coord.m)
-    print(paste0("Current length of coord.df value for map updates is ",
-                 length(coord.df)))
+    print(paste0("Current nrow of coord.df value for map updates is ",
+                 nrow(coord.df)))
     coord.df$lng <- coord.df$lon #rename default to match what addMarkers in leaflet() lines below requires.
     coord.df$lon <- NULL #delete old column
     #https://tmieno2.github.io/R-as-GIS-for-Economists/turning-a-data-frame-of-points-into-an-sf.html
     coord.sf <- st_as_sf(na.omit(coord.df),
                          coords = c("lng", "lat"),
                          crs = 4326 # https://spatialreference.org/ref/epsg/4326/
-                         )
+    )
+    print(paste0("coord.df has been converted to format ", class(coord.sf)))
     #run the leaflet function
-    coord.m <- leaflet() %>%
+    # I believe it is necessary to pull the reactive sf object into its own internal object here a la 
+    # https://stackoverflow.com/questions/76609621/how-to-use-shiny-reactive-functions-for-plotting-an-sf-object-that-mapped-a-nume
+    
+    coord.map <- leaflet() %>%
       
       #Using provider tile from maps.stamen.com: https://maps.stamen.com/terrain/#12/37.7706/-122.3782
       addProviderTiles(provider = "Stadia.StamenTerrain") %>%
@@ -963,26 +975,22 @@ shinyModule <- function(input, output, session, data) {
       #with the leafgl function to make it render better for large numbers of points, which most geolocator datasets have
       addGlPoints(data = coord.sf)
     
+    print(paste0("coord.map has been created as a ", class(coord.map)))
+    
     # leaflet() %>%
     #   #add map tiles
     #   addTiles() %>%
     #   #add the calculated coordinates based on edited twilights
     #   addMarkers(lng = coord.m()$lng,
     #              lat = coord.m()$lat)
-  
-    return(coord.m)
-  })
-  
-  observeEvent(input$update_map, {
-    # I believe it is necessary to pull the reactive sf object into its own internal object here a la 
-    # https://stackoverflow.com/questions/76609621/how-to-use-shiny-reactive-functions-for-plotting-an-sf-object-that-mapped-a-nume
-    coord.map <- coord.m()
-    options(viewer = NULL) # view in browser
-    output$mymap <- renderLeafgl(
-      coord.map,
-      quoted = TRUE)
     
-  })
+    #options(viewer = NULL) # view in browser
+
+    output$mymap <- renderLeaflet(
+
+      coord.map
+    )
+  }))
   
   
   
