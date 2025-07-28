@@ -1,7 +1,19 @@
 twl_rise <- TwGeos::findTwilights(tagdata = data.frame(Date = geolocator_raw_moveapps$timestamp,
                                                        Light = geolocator_raw_moveapps$light_level), 
-                                  threshold = 100,
+                                  threshold = 5.5,
                                   include = geolocator_raw_moveapps$timestamp)
+
+geolocator_raw_moveapps$excluded <- FALSE
+
+edited_twilights <- TwGeos::findTwilights(tagdata = data.frame(Date = geolocator_raw_moveapps$timestamp[geolocator_raw_moveapps$excluded == FALSE],
+                                                               Light = geolocator_raw_moveapps$light_level[geolocator_raw_moveapps$excluded == FALSE]), 
+                                          threshold = 5.5,
+                                          include = geolocator_raw_moveapps$timestamp[geolocator_raw_moveapps$excluded == FALSE]
+)
+
+
+
+
 
 twl_rise$tSecond <- dplyr::lead(
   twl_rise$Twilight,                        #column of Twilight times
@@ -51,57 +63,59 @@ library(SGAT)
 library(GeoLight)
 library(MASS)
 
-calib <- TwGeos::thresholdCalibration(calib$Twilight, calib$Rise, lon.calib, lat.calib, method = "log-norm")
+# calib <- TwGeos::thresholdCalibration(calib$Twilight, calib$Rise, lon.calib, lat.calib, method = "log-norm")
 
 library(leaflet)
-#run the leaflet function
-m <- leaflet() %>%
-  addProviderTiles(
-    "Stamen.Toner",
-    group = "Stamen.Toner"
-  )
-
-m
+# #run the leaflet function
+# m <- leaflet() %>%
+#   addProviderTiles(
+#     "Stamen.Toner",
+#     group = "Stamen.Toner"
+#   )
+# 
+# m
 
 options(viewer = NULL) # view in browser
 
 library(leafgl)
 
-leaflet() %>%
-  addProviderTiles(provider = "Stadia.StamenTerrain") %>%
-  addGlPoints(data = coord.sf)
 
-
-  
-  #add the calculated coordinates based on edited twilights
-map_1 <- m %>%
-  addAwesomeMarkers(
-    lat = 48.1,
-    lng = 11.5,
-    label = "Starting point"
-  )
-
-library(mapview)
-#https://bookdown.org/nicohahn/making_maps_with_r5/docs/mapview.html
+# 
+# 
+#   
+#   #add the calculated coordinates based on edited twilights
+# map_1 <- m %>%
+#   addAwesomeMarkers(
+#     lat = 48.1,
+#     lng = 11.5,
+#     label = "Starting point"
+#   )
+# 
+# library(mapview)
+# #https://bookdown.org/nicohahn/making_maps_with_r5/docs/mapview.html
 
 library(sf)
 
 #https://tmieno2.github.io/R-as-GIS-for-Economists/turning-a-data-frame-of-points-into-an-sf.html
 coord.sf <- st_as_sf(na.omit(coord.df), coords = c("lng", "lat"), crs = 4326)
 
+leaflet() %>%
+  addProviderTiles(provider = "Stadia.StamenTerrain") %>%
+  addGlPoints(data = coord.sf)
+
 #possibly not rendering in leaflet because of number of markers: https://stackoverflow.com/questions/34607908/using-many-markers-with-leaflet-in-combination-with-shiny-server 
 #suggests mapview as an alternative or clustering (which is probably not good for this use case?)
 #or this: https://github.com/r-spatial/leafgl
-
-mapview(head(coord.sf), legend = FALSE)
-
-#https://stackoverflow.com/questions/65485747/mapview-points-not-showing-in-r
-
-#https://stackoverflow.com/questions/36679944/mapview-for-shiny#36682268
-#https://www.spsanderson.com/steveondata/posts/rtip-2023-05-04/index.html
-
-
-library(mapgl)
-maplibre(style = carto_style("positron")) %>%
-  fit_bounds(coord.sf, animate = FALSE) %>%
-  add_markers(data = head(coord.sf, 200))
+# 
+# mapview(head(coord.sf), legend = FALSE)
+# 
+# #https://stackoverflow.com/questions/65485747/mapview-points-not-showing-in-r
+# 
+# #https://stackoverflow.com/questions/36679944/mapview-for-shiny#36682268
+# #https://www.spsanderson.com/steveondata/posts/rtip-2023-05-04/index.html
+# 
+# 
+# library(mapgl)
+# maplibre(style = carto_style("positron")) %>%
+#   fit_bounds(coord.sf, animate = FALSE) %>%
+#   add_markers(data = head(coord.sf, 200))

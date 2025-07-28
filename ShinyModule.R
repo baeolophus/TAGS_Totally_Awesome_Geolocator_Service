@@ -726,12 +726,14 @@ shinyModule <- function(input, output, session, data) {
   geolocatordata_keep <- eventReactive(input$create_data, {
     df <- data
     df$excluded <- vals$excluded
+    print("geolocatordata_keep reactive object created")
     return(df)
     
   })
   observeEvent(input$create_data, {
     output$data_preview <- renderDT(geolocatordata_keep(),
                                     server = TRUE)
+    print("geolocatordata_keep reactive object rendered")
   })
   
    ################# Create edited twilights object #####################
@@ -746,14 +748,17 @@ shinyModule <- function(input, output, session, data) {
     #                                        LightThreshold = input$light_threshold,
     #                                        allTwilights = FALSE)
     # 
-    edited_twilights <- TwGeos::findTwilights(tagdata = data.frame(Date = geolocatordata_keep()[geolocatordata_keep()$excluded == FALSE,
-                                                                                                "timestamp"],
-                                                           Light = geolocatordata_keep()[geolocatordata_keep()$excluded == FALSE,
-                                                                                         "light_level"]), 
-                                      threshold = input$light_threshold,
-                                      include = geolocatordata_keep()[geolocatordata_keep()$excluded == FALSE,
-                                                                      "timestamp"])
     
+    geolocatordata_keep <- geolocatordata_keep()
+    
+    print("edited_twilights reactive: convert geolocatordata_keep to regular df within reactive")
+    
+    edited_twilights <- TwGeos::findTwilights(tagdata = data.frame(Date = geolocatordata_keep$timestamp[geolocatordata_keep$excluded == FALSE],
+                                                           Light = geolocatordata_keep$light_level[geolocatordata_keep$excluded == FALSE]), 
+                                      threshold = input$light_threshold,
+                                      include = geolocatordata_keep$timestamp[geolocatordata_keep$excluded == FALSE])
+    
+    print("TwGeos::findTwilights ran")
     #should this be a not just twilights dataset?  findTwilights generates that only, and allTwilights=FALSE means something.
     
     edited_twilights$tSecond <- dplyr::lead(
@@ -766,6 +771,8 @@ shinyModule <- function(input, output, session, data) {
     
     # sunset = 2 per getElevation documentation
     edited_twilights$type[edited_twilights$Rise==FALSE] <- 2    
+    
+    print("edited_twilights() reactive has been created")
     
     return(edited_twilights)
   })
@@ -930,12 +937,16 @@ shinyModule <- function(input, output, session, data) {
   
   #Get coordinates for all consecutive twilights.
   coord.m <- reactive({
-    #ctwl <- edited_twilights()
-    coord.m <- GeoLight::coord(tFirst = edited_twilights()$Twilight, # formerly named tFirst, left old name since it's the GeoLight format for consistency (will see if need to change later.)
-                             tSecond = edited_twilights()$tSecond,
-                             type = edited_twilights()$type,
+    print("clicked the map button")
+    et <- edited_twilights()
+    
+    coord.m <- GeoLight::coord(tFirst = et$Twilight, # formerly named tFirst, left old name since it's the GeoLight format for consistency (will see if need to change later.)
+                             tSecond = et$tSecond,
+                             type = et$type,
                              degElevation=input$sunangle)
     coord.df <- data.frame(coord.m)
+    print(paste0("Current length of coord.df value for map updates is ",
+                 length(coord.df)))
     coord.df$lng <- coord.df$lon #rename default to match what addMarkers in leaflet() lines below requires.
     coord.df$lon <- NULL #delete old column
     #https://tmieno2.github.io/R-as-GIS-for-Economists/turning-a-data-frame-of-points-into-an-sf.html
@@ -966,6 +977,7 @@ shinyModule <- function(input, output, session, data) {
     # I believe it is necessary to pull the reactive sf object into its own internal object here a la 
     # https://stackoverflow.com/questions/76609621/how-to-use-shiny-reactive-functions-for-plotting-an-sf-object-that-mapped-a-nume
     coord.map <- coord.m()
+    options(viewer = NULL) # view in browser
     output$mymap <- renderLeafgl(
       coord.map,
       quoted = TRUE)
