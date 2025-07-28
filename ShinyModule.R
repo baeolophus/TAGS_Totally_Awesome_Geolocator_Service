@@ -238,13 +238,13 @@ shinyModuleUserInterface <- function(id, label) {
         h2("Step 7. Download data"),
         
         #Button to download data.
-        downloadButton('downloadData', 'Download TAGS format (original data with edits and twilights)'),
+        downloadButton(ns('downloadData'), 'Download TAGS format (original data with edits and twilights)'),
         
         #Add one for coordinates only
-        downloadButton('downloadDataCoord', 'Download edited coordinates only'),
+        downloadButton(ns('downloadDataCoord'), 'Download edited coordinates only'),
         
         #Add one for edited twilights only
-        downloadButton('downloadDataTwilights', 'Download edited twilights only')
+        downloadButton(ns('downloadDataTwilights'), 'Download edited twilights only')
         
         
         
@@ -1058,8 +1058,8 @@ shinyModule <- function(input, output, session, data) {
   ##--## end of example ##--##
   ########## Return reactive dataset for next item in MoveApps workflow ########## 
   # data must be returned. Either the unmodified input data, or the modified data by the app
-  return(reactive({ current() }))  
-  # return(reactive({ modifiedData() }))  # I think I  need this one?  do I put the object inside ()?
+  # return(reactive({ current() }))  
+  return(reactive({ edited_twilights() }))  # I think I  need this one?  do I put the object inside ()?
   
   
 }
