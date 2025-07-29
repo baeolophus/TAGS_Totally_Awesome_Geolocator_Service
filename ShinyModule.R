@@ -893,8 +893,7 @@ shinyModule <- function(input, output, session, data) {
     
     print(paste0("out0 has nrows", nrow(out0)))
     print(names(out0))
-    print(out0$excluded)
-    
+
     out0$interp[is.na(out0$excluded)] <- TRUE #values are interpolated where it did not exist in original data.
     out0$excluded[is.na(out0$excluded)] <- FALSE #values from the edited twilights were not excluded and MUST have a value.
     
