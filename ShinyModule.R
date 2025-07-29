@@ -855,26 +855,34 @@ shinyModule <- function(input, output, session, data) {
   final_TAGS <- reactive({
     #Must merge the raw data with twilights, note whether a value was interpolated.
     raw <- geolocatordata_keep() #raw original values but with true/false excluded column
+    print(paste0("raw column names are ", names(raw)))
+    # column names for raw are sensor_type_id, comments, light_level, timestamp, event_id, visible, geometry, individual_name_deployment_id, excluded
+    # then create a column called twilight with value 0 (not a twilight)
+    raw$twilight <- 0
+        
     #That is how this function differents from FLightR: GeoLight2TAGS
     #(it has no accounting for exclusion except to assume excluded = FALSE)
-    gl_twl <- edited_twilights() #Get edited twilights
-    raw$twilight <- 0
+    gl_twl <- edited_twilights() #Get edited twilights that includes old "type" column and new "Rise" column
+    # column names for gl_twl are Twilight (formerly tFirst), Rise (generated with new TwGeos), tSecond, type (manually created to match old GeoLight format)
+    print(paste0("gl_twl column names are ", names(gl_twl)))
+    
+
     twl <- data.frame(datetime = as.POSIXct(c(gl_twl$Twilight, # formerly named tFirst
                                               gl_twl$tSecond), "UTC"), 
                       twilight = c(gl_twl$type,
                                    ifelse(gl_twl$type == 1, 2, 1)))
     twl <- twl[!duplicated(twl$datetime), ]
     twl <- twl[order(twl[, 1]), ]
-    twl$light <- mean(stats::approx(x = raw$datetime,
-                                    y = raw$light, 
+    twl$light <- mean(stats::approx(x = raw$timestamp,
+                                    y = raw$light_level, 
                                     xout = twl$datetime)$y,
-                      na.rm = T)
+                      na.rm = TRUE)
     tmp01 <- merge(raw,
                    twl,
                    all.y = TRUE,
                    all.x = TRUE)
-    out0 <- data.frame(datetime = tmp01[, "datetime"], 
-                       light = tmp01[, "light"],
+    out0 <- data.frame(datetime = tmp01[, "timestamp"], 
+                       light = tmp01[, "light_level"],
                        twilight = tmp01[, "twilight"], 
                        interp = FALSE, 
                        excluded = tmp01[, "excluded"]) #use the excluded we have created, not assume false
@@ -889,10 +897,10 @@ shinyModule <- function(input, output, session, data) {
                                     ifelse(gl_twl2$type == 1, 2, 1)))
     twl2 <- twl2[!duplicated(twl2$datetime), ]
     twl2 <- twl2[order(twl2[, 1]), ]
-    twl2$light <- mean(stats::approx(x = raw$datetime,
-                                     y = raw$light, 
+    twl2$light <- mean(stats::approx(x = raw$timestamp,
+                                     y = raw$light_level, 
                                      xout = twl2$datetime)$y,
-                       na.rm = T)
+                       na.rm = TRUE)
     
     
     tmp02 <- merge(raw,
