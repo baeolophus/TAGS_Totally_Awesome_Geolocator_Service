@@ -775,6 +775,12 @@ shinyModule <- function(input, output, session, data) {
     
     print("edited_twilights() reactive has been created")
     
+    
+    # From Anne:
+    # The "solar-geolocator-twilight" type will always contain the columns timestamp and geolocator rise 
+    # (defined as: "The period of day used to estimate location by geolocation. TRUE = sunrise, FALSE = sunset. Units: none"), 
+    # and can contain additional columns depending on the study like "twilight_excluded","twilight_inserted","twilight", etc
+    
     return(edited_twilights)
   })
   
