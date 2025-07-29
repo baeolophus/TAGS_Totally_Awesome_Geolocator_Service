@@ -881,20 +881,46 @@ shinyModule <- function(input, output, session, data) {
                    twl,
                    all.y = TRUE,
                    all.x = TRUE)
-    out0 <- data.frame(datetime = tmp01[, "timestamp"], 
-                       light = tmp01[, "light_level"],
-                       twilight = tmp01[, "twilight"], 
+    
+    print(paste0("tmp01 has nrows", nrow(tmp01)))
+    print(names(tmp01))
+    
+    out0 <- data.frame(datetime = tmp01$timestamp, 
+                       light = tmp01$light_level,
+                       twilight = tmp01$twilight, 
                        interp = FALSE, 
-                       excluded = tmp01[, "excluded"]) #use the excluded we have created, not assume false
+                       excluded = tmp01$excluded) #use the excluded we have created, not assume false
+    
+    print(paste0("out0 has nrows", nrow(out0)))
+    print(names(out0))
+    print(out0$excluded)
+    
     out0$interp[is.na(out0$excluded)] <- TRUE #values are interpolated where it did not exist in original data.
     out0$excluded[is.na(out0$excluded)] <- FALSE #values from the edited twilights were not excluded and MUST have a value.
     
     #now merge in original twilights and note as excluded, as FlightR at least will account for that.
-    gl_twl2 <- twl()[[2]]
+    # switching from twl()[[2]] to plain twl() as new TwGeos twilights not in a two-part list
+    gl_twl2 <- twl()
+    
+    # add in old GeoLight "type" column
+    
+    # Rise = TRUE, sunrise = 1 per getElevation documentation
+    gl_twl2$type[gl_twl2$Rise==TRUE] <- 1
+    
+    # sunset = 2 per getElevation documentation
+    gl_twl2$type[gl_twl2$Rise==FALSE] <- 2    
+    
+    print("gl_twl2 column names")
+    print(names(gl_twl2))
+    
     twl2 <- data.frame(datetime = as.POSIXct(c(gl_twl2$Twilight, # formerly named tFirst
                                                gl_twl2$tSecond), "UTC"), 
                        twilight = c(gl_twl2$type,
                                     ifelse(gl_twl2$type == 1, 2, 1)))
+    
+    print("twl2 column names")
+    print(names(twl2))
+    
     twl2 <- twl2[!duplicated(twl2$datetime), ]
     twl2 <- twl2[order(twl2[, 1]), ]
     twl2$light <- mean(stats::approx(x = raw$timestamp,
@@ -908,11 +934,11 @@ shinyModule <- function(input, output, session, data) {
                    all.y = TRUE,
                    all.x = TRUE)
     
-    out1 <- data.frame(datetime = tmp02[, "datetime"], 
-                       light = tmp02[, "light"],
-                       twilight = tmp02[, "twilight"], 
+    out1 <- data.frame(datetime = tmp02$datetime, 
+                       light = tmp02$light,
+                       twilight = tmp02$twilight, 
                        interp = FALSE, 
-                       excluded = tmp02[, "excluded"]) #use the excluded we have created, not assume false
+                       excluded = tmp02$excluded) #use the excluded we have created, not assume false
     out1$interp[is.na(out1$excluded)] <- TRUE #values are interpolated where it did not exist in original data.
     
     #return all rows from x (the full set of twilights) but only use twilight values from the good ones.
