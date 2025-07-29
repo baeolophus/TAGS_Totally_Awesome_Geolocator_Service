@@ -239,10 +239,10 @@ shinyModuleUserInterface <- function(id, label) {
         
         #Button to download data.
         downloadButton(ns('downloadData'), 'Download TAGS format (original data with edits and twilights)'),
-        
-        #Add one for coordinates only
-        downloadButton(ns('downloadDataCoord'), 'Download edited coordinates only'),
-        
+        # 
+        # #Add one for coordinates only
+        # downloadButton(ns('downloadDataCoord'), 'Download edited coordinates only'),
+        # 
         #Add one for edited twilights only
         downloadButton(ns('downloadDataTwilights'), 'Download edited twilights only')
         
@@ -1022,22 +1022,22 @@ shinyModule <- function(input, output, session, data) {
       
     })
   
-  output$downloadDataCoord <- downloadHandler(
-    
-    filename = function() { 
-      paste("coord_data-", 
-            input$filename,
-            Sys.Date(), ".csv", sep="")
-    },
-    
-    content = function(file) {
-      
-      write.csv(coord(), 
-                file,
-                quote = FALSE,
-                row.names = FALSE)
-      
-    })
+  # output$downloadDataCoord <- downloadHandler(
+  #   
+  #   filename = function() { 
+  #     paste("coord_data-", 
+  #           input$filename,
+  #           Sys.Date(), ".csv", sep="")
+  #   },
+  #   
+  #   content = function(file) {
+  #     
+  #     write.csv(coord(), 
+  #               file,
+  #               quote = FALSE,
+  #               row.names = FALSE)
+  #     
+  #   })
   
   output$downloadDataTwilights <- downloadHandler(
     
