@@ -238,13 +238,13 @@ shinyModuleUserInterface <- function(id, label) {
         h2("Step 7. Download data"),
         
         #Button to download data.
-        downloadButton(ns('downloadData'), 'Download TAGS format (original data with edits and twilights)'),
+        actionButton(ns('downloadData'), 'Download TAGS format (original data with edits and twilights)'),
         # 
         # #Add one for coordinates only
         # downloadButton(ns('downloadDataCoord'), 'Download edited coordinates only'),
         # 
         #Add one for edited twilights only
-        downloadButton(ns('downloadDataTwilights'), 'Download edited twilights only')
+        actionButton(ns('downloadDataTwilights'), 'Download edited twilights only')
         
         
         
@@ -1032,28 +1032,18 @@ shinyModule <- function(input, output, session, data) {
   
   
   ################## Downloading data files ########## 
-  #Code to do downloading here and in UI adapted from here:
-  #https://stackoverflow.com/questions/41856577/upload-data-change-data-frame-and-download-result-using-shiny-package
 
-  
-  output$downloadData <- downloadHandler(
-    
-    filename = function() { 
-      paste("TAGS_format_data-", 
-            input$filename,
-            Sys.Date(),
-            ".csv",
-            sep="")
-    },
-    
-    content = function(file) {
-      
-      write.csv(final_TAGS(), 
-                file,
+  observeEvent(input$downloadData,
+    write.csv(final_TAGS(), 
+              file = appArtifactPath(
+                paste("TAGS_format_data-", 
+                      input$filename,
+                      Sys.Date(),
+                      ".csv",
+                      sep="")), # https://docs.moveapps.org/#/copilot-shiny-sdk?id=example-6
                 quote = FALSE,
                 row.names = FALSE)
-      
-    })
+    )
   
   # output$downloadDataCoord <- downloadHandler(
   #   
@@ -1072,23 +1062,21 @@ shinyModule <- function(input, output, session, data) {
   #     
   #   })
   
-  output$downloadDataTwilights <- downloadHandler(
-    
-    filename = function() { 
-      paste("twilights_data-", 
-            input$filename,
-            Sys.Date(), ".csv", sep="")
-    },
-    
-    content = function(file) {
+observeEvent(input$downloadDataTwilights,
       
       write.csv(edited_twilights(),
-                file,
+                file = appArtifactPath(
+                  paste("twilights_data-", 
+                        input$filename,
+                        Sys.Date(), ".csv", sep="")
+                ),  # https://docs.moveapps.org/#/copilot-shiny-sdk?id=example-6
                 quote = FALSE,
                 row.names = FALSE)
       
-    })
-  ##--## end of example ##--##
+)
+
+
+
   ########## Return reactive dataset for next item in MoveApps workflow ########## 
   # data must be returned. Either the unmodified input data, or the modified data by the app
   # return(reactive({ current() }))  
