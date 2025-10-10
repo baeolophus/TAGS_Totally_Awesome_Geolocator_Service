@@ -5,7 +5,7 @@ library("shiny")
 # Required CRAN libraries other than shiny
 library(dplyr)
 library(DT)
-library(FLightR)
+#library(FLightR)
 library(ggplot2)
 library(leafgl)
 library(leaflet)
