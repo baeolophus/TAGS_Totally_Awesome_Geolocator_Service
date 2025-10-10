@@ -1,12 +1,6 @@
 {
-  "version": "1.0",
+  "version": "1.2",
   "settings": [
-    {
-      "id": "auxiliary-file-a",
-      "name": "Personalization",
-      "description": "You can personalize the app by providing a file",
-      "type": "USER_FILE"
-    }
   ],
   "dependencies": {
     "R": [
@@ -58,13 +52,10 @@
     ]
   },
   "providedAppFiles": [
-    {
-      "settingId": "auxiliary-file-a",
-      "from": "data/auxiliary/user-files/provided-app-files/auxiliary-file-a/sample.txt"
-    }
+
   ],
   "license": {
-    "key": "MIT"
+    "key": "GPL-3.0-or-later"
   },
   "language": "eng",
   "keywords": [
@@ -74,7 +65,7 @@
   "people": [
     {
       "firstName": "Claire",
-      "middleInitials": "M""
+      "middleInitials": "M",
       "lastName": "Curry",
       "email": "cmcurry@ou.edu",
       "roles": [
@@ -93,10 +84,6 @@
     }
   ],
   "references": [
-    {
-      "type": "IsDescribedBy",
-      "note": "Darwin, C. 1900. The creation. Journal XY. 1-2",
-      "url": "https://anylink.xyz"
-    }
+
   ]
 }
