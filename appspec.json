@@ -1,5 +1,5 @@
 {
-  "version": "1.2",
+  "version": "1.0",
   "settings": [
     {
       "id": "auxiliary-file-a",
@@ -14,10 +14,46 @@
         "name": "shiny"
       },
       {
+        "name": "dplyr"
+      },
+      {
+        "name": "DT"
+      },
+      {
+        "name": "FLightR"
+      },
+      {
+        "name": "GeoLight"
+      },
+      {
+        "name": "ggplot2"
+      },
+      {
+        "name": "leafgl"
+      },
+      {
+        "name": "leaflet"
+      },
+      {
+        "name": "lubridate"
+      },
+      {
         "name": "move2"
       },
       {
+        "name": "rlang"
+      },
+      {
+        "name": "scales"
+      },
+      {
         "name": "sf"
+      },
+      {
+        "name": "shinycssloaders"
+      },
+      {
+        "name": "TwGeos"
       }
     ]
   },
@@ -32,28 +68,28 @@
   },
   "language": "eng",
   "keywords": [
-    "example",
-    "template"
+    "geolocator",
+    "light-level data"
   ],
   "people": [
     {
-      "firstName": "Charles",
-      "middleInitials": null,
-      "lastName": "Darwin",
-      "email": "creator@example.com",
+      "firstName": "Claire",
+      "middleInitials": "M""
+      "lastName": "Curry",
+      "email": "cmcurry@ou.edu",
       "roles": [
         "author",
         "creator"
       ],
-      "orcid": null,
-      "affiliation": null,
+      "orcid": "0000-0003-4649-7537",
+      "affiliation": "University of Oklahoma",
       "affiliationRor": null
     }
   ],
   "funding": [
     {
       "name": "funder name",
-      "comment": "grant for App"
+      "comment": "original development supported by"
     }
   ],
   "references": [
