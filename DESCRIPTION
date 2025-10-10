@@ -1,7 +1,7 @@
 Title: Totally Awesome Geolocator Service
 Author: Claire M. Curry
 AuthorUrl: http://thebridgelab.oucreate.com/
-License: MIT
+License: GPL-3.0-or-later
 DisplayMode: Normal
 Tags: geolocator, data
 Type: Shiny
