@@ -84,6 +84,20 @@
     }
   ],
   "references": [
-
+  {
+    "type": "Requires",
+    "note": "Lisovski S, Wotherspoon S, Sumner M. 2016. TwGeos: Basic data processing for light-level geolocation archival tags. R package version 0.1.2, commit 028f4992c3068b511635ce5a74beb4165be1a2bb",
+    "url": "https://github.com/SLisovski/TwGeos"
+  },
+  {
+    "type": "Requires",
+    "note": "Lisovski, S. and Hahn, S. 2013. GeoLight - processing and analysing light-based geolocation in R. Methods in Ecology and Evolution, 3, 1055-1059.",
+    "url": "https://doi.org/10.1111/j.2041-210X.2012.00248.x"
+  },
+  {
+    "type": "References",
+    "note": "Rakhimberdiev E, Saveliev A, Piersma T, Karagicheva J. 2017. FLightR: An R package for reconstructing animal paths from solar geolocation loggers. Methods in Ecology and Evolution, 8, 1482–1487. doi:10.1111/2041-210X.12765.",
+    "url": "https://doi.org/10.1111/2041-210X.12765"
+  }
   ]
 }
