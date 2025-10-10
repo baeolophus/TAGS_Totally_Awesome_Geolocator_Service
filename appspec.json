@@ -98,6 +98,11 @@
     "type": "References",
     "note": "Rakhimberdiev E, Saveliev A, Piersma T, Karagicheva J. 2017. FLightR: An R package for reconstructing animal paths from solar geolocation loggers. Methods in Ecology and Evolution, 8, 1482–1487. doi:10.1111/2041-210X.12765.",
     "url": "https://doi.org/10.1111/2041-210X.12765"
+  },
+  {
+    "type": "Obsoletes",
+    "note": "Curry CM, Bridge ES. 2017-2025. TAGS: Totally Awesome Geolocator Service.  RShiny Web App.",
+    "url": "https://tags.shinyapps.io/tags_shiny/"
   }
   ]
 }
