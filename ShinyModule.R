@@ -48,7 +48,7 @@ shinyModuleUserInterface <- function(id, label) {
     titlePanel(
       "Totally Awesome Geolocator Service",
       windowTitle = "TAGS"),
-    # img(src = "images/TAGS_logo.png"),
+      img(src = "./src/app/TAGS_logo.png"),
     # #TAGS logo placed here
     sidebarLayout(
       sidebarPanel(
