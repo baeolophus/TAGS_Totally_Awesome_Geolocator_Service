@@ -1,39 +1,115 @@
-# Name of App *(Give your app a short and informative title. Please adhere to our convention of Title Case without hyphens (e.g. My New App))*
+# TAGS the Totally Awesome Geolocator Service
 
 MoveApps
 
-Github repository: *github.com/yourAccount/Name-of-App* *(provide the link to the repository where the code of the App can be found)*
+Github repository: *github.com/baeolophus/TAGS_Totally_Awesome_Geolocator_Service*
 
 ## Description
-*Enter here the short description of the App that might also be used when filling out the description during App submission to MoveApps. This text is directly presented to Users that look through the list of Apps when compiling Workflows.*
+TAGS, the Totally Awesome Geolocator Service is an RShiny App that allows you, the researcher, to edit messy geolocator data in a point-and-click format while saving excluded values for reproducible work.  TAGS automatically suggests potential problem areas based on unexpected values (and you can change the threshold for these), lets you move from problem to problem to edit, and shows a map of coordinates generated from your data given your current edits. 
 
 ## Documentation
-*Enter here a detailed description of your App. What is it intended to be used for. Which steps of analyses are performed and how. Please be explicit about any detail that is important for use and understanding of the App and its outcomes. You might also refer to the sections below.*
+
+### Example usage
+
+
+#### Step 1. Select your file
+The example screenshots in this section are generated with the sample MoveApps file. Once the blue "loading" bar below the "Browse for your file" secondary header says "Upload complete", then a figure appears under <a href=https://github.com/baeolophus/TAGS_shiny_version#step-2-calibration-period-information>Step 5</a>. An error may show briefly under Step 5, but the plot is still loading as long as the loading indicator (three vertical blue bars) returns. Once the file is uploaded, the column headers are renamed to "datetime" and "light", so the appearance of TAGS column headers will be the same for any files. Then, proceed to <a href="https://github.com/baeolophus/TAGS_shiny_version#step-2-calibration-period-information">Step 2</a>.
+![Step 1 completed; the "loading" bar is filled with blue stripes and text that says "upload complete" and a line graph of all the data appears under the Step 5 header.](Step1_screenshot.PNG?raw=true "ShinyApps TAGS screen after Step 1 completed.")
+
+  
+  
+#### Step 2. Calibration period information
+For the example file, enter the following sample values.
+- Calibration latitude 44.655523
+- Calibration longitude -84.647636
+- Calibration start date 2014-06-13
+- Calibration end date 2014-07-29
+
+These values result in a calculated sun angle of -3.42629187230021. 
+
+<a href="https://github.com/baeolophus/TAGS_shiny_version/issues/7">Known bug</a>: if you click "calculate sun angle from data" before entering values, the app will crash.
+ 
+ ![Step 2 completed; values are latitude 44.655523, longitude -84.647636, and dates 2014-06-13 to 2014-07-29.  These result in a calculated sun angle of -3.42629187230021.](Step2_screenshot.PNG?raw=true "ShinyApps TAGS screen after Step 2 completed.") 
+ 
+#### Step 3. Light threshold entry
+
+The default light threshold value is 5.5.  We will leave this value as-is.  For information on editing this value, read <a href="https://github.com/baeolophus/TAGS_shiny_version#step-3-light-threshold-entry-1">the documentation for Step 3</a>.
+ 
+#### Step 4. Optional: change value for finding problem areas
+The default threshold for detecting problem areas in light data is 5 hours.  We will leave this value as-is.  For information on editing this value, read <a href="https://github.com/baeolophus/TAGS_shiny_version/blob/main/README.md#step-4-optional-change-value-for-finding-problem-areas-1">the documentation for Step 4</a>.
+ 
+#### Step 5. Find problem areas and edit your data
+
+This step contains two plots (generated with ggplot2).  The first plot shows shows all of your data with problem areas highlighted in red boxes and the location of the editing window shown in gray.  (An error may show briefly on the overall data view plot, but the plot is still loading as long as the loading indicator returns.)
+
+The second plot is shown below window settings and is the interactive plot where you choose points to exclude.
+
+The editing plot (the second plot in this section) can be moved in two ways: by editing window or by problem (as illustrated in the first plot).  Use the Previous and Next buttons to move to the next or previous editing window or problem twilight.  You can click individual points to toggle them from included (default) to excluded. Below the editing plot are three buttons.
+- Toggle currently selected points: clicking this button toggles the state (excluded/included) for the currently selected point or points.
+- Reset ALL EXCLUDED POINTS: this returns all excluded points to "excluded" = FALSE.
+- Show/refresh edited values: this shows a table of the edited rows, returning the new (edited) light values.
+ 
+
+To determine if the problem highlighter "red box" is working correctly, examine the example file.
+The example .lig is easier to edit if we adjust the window length to 1.
+
+![Step 5 first change is moving Editing Window Length from default value of 2 to 1, keeping units as days.](Step5_screenshot1.PNG?raw=true "ShinyApps TAGS screen during adjusting Step 5 values; first change of setting editing window length value to 1.") 
+
+ With default values for finding problem areas and the window length at 1, we can see a problem area exists from 2014-06-07T11:32:36Z to 2014-06-07T15:14:36Z (rows 351-462).  Using the mouse cursor to click and drag, set the area to toggle points in and out of exclusion.
+![Step 5 scroll down to edit window](Step5_screenshot2.PNG?raw=true "ShinyApps TAGS screen scrolling down through Step 5 to see editing window") 
+
+Once the points are selected (the rectangular box will stay in the plot window), click "Toggle Selected Points".  The points, previously filled with black, become empty circles.
+![Step 5 editing window with problem light levels excluded (the points have become unfilled).](Step5_screenshot3.PNG?raw=true "Step 5 editing window with problem light levels excluded (the points have become unfilled).") 
+
+Below the editing window plot, scroll down to see all of the buttons.  Clicking "Show/refresh edited values" will generate a table of points that have been excluded.
+![Step 5 table (below editing window) with problem light levels excluded.](Step5_screenshot4.PNG?raw=true "Step 5 table (below editing window) with problem light levels excluded") 
+
+#### Step 6. Generate coordinates
+- 6A. Generate edited twilights for coordinate calculation: this step creates lat/long coordinates in decimal degrees using the function GeoLight::coord and shows them in a table on the TAGS page.
+- 6B. Generate map from edited twilights: this step takes the coordinates from Step 6A and plots them using ggplot2.
+
+Documentation for the underlying Geolight R package is at https://github.com/slisovski/GeoLight and explains how twilights are calculated.
+ 
+
+Step 6 has two parts to examine your edited coordinates.
+
+- Step 6a generates location points from the edited light data.  At this step, it lets you see your edited and unedited points with datetime and lightlevel together.  You can use the "search" box in the upper right corner above the table to filter.  This screenshot shows "true" written in search, which pulls up the 99 excluded points, so you can spot check dates/times against the Step 5 plot if desired.
+- Step 6b takes the generated coordinates from Step 6a and plots them on a map.
+
+
+#### Step 7. Download data
+The three download buttons will export three different file formats, prefixed with the download type and suffixed with the download date.  For the sample .lig file originally named GL36_000.lig, the downloaded file will be named as follows
+- "Download TAGS format (original data with edits and twilights)" creates <a href="/data/TAGS_format_data-GL36_000.lig2023-02-20.csv">TAGS_format_data-GL36_000.lig2023-02-20.csv</a>.
+- "Download edited coordinates only" creates <a href="/data/coord_data-GL36_000.lig2023-02-20.csv">coord_data-GL36_000.lig2023-02-20.csv</a>.
+- "Download edited twilights only" creates <a href="/data/twilights_data-GL36_000.lig2023-02-20.csv">twilights_data-GL36_000.lig2023-02-20.csv</a>.
+
+Data can be downloaded as a .csv file in three formats.  All three formats begin with a prefix for the download type and end with the download date appended.  
+
+ - Recommended: "Download TAGS format (original data with edits and twilights)" - use this if you are taking the data to another geolocator processing software that requires a TAGS format OR if the format will be accepted by other programs.  One of the additional benefits of the TAGS format is that it documents your edits, so if the next package in your workflow will accept this format, it is a reproducible choice.  Column headers will be "datetime" (in POSIXct format in UTC), "light", "twilight", "interp" (TRUE/FALSE), and "excluded" (TRUE/FALSE)
+ - "Download edited coordinates only" - use this if you only want the coordinates for your tag after editing.
+ - "Download edited twilights only" - use this if you want the twilights after editing.
+
+#### Automated tests
+Geolocator data is cleaned visually and manually with this tool.  A map is created in step 6 to allow you to check whether points are appearing where expected relative to your animal release point.  Citations explaining the GeoLight location calculation methods are available at https://github.com/slisovski/GeoLight .  You can compare your table and map to the screenshots in the sample .lig file from "Example Use" to determine basic functionality.
+
+#### Community guidelines
+**Claire is currently seeking someone to take over managing the project, so please reach out to her and Eli if you are interested in a stronger role in expanding TAGS.**
+
+To contribute to TAGS, please create a fork, demonstrate that your changes do not cause unexpected issues in other functionality, then make a pull request on GitHub. To report problems or request a new feature, please create an issue in this repository. For other questions, please contact <a href="https://libraries.ou.edu/users/claire-curry">Claire M. Curry</a>  or <a href="http://thebridgelab.oucreate.com/peeps/">Eli S. Bridge</a>.
+
 
 ### Application scope
 #### Generality of App usability
-*State here if the App was developed for a specific species, taxon or taxonomic group, or to answer a specific question. How might it influence the scope and utility of the App. This information will help the user to understand why the App might be producing no or odd results.*
 
-*Examples:*
-
-This App was developed using data of birds. 
-
-This App was developed using data of red deer. 
-
-This App was developed for any taxonomic group. 
-
-This App was developed to identify kill sites, but can probably be used to identify any kind of location clusters like nests, dens or drinking holes.
+This App was developed using data of birds with solar light-level geolocators.  It can be used to clean data from any animals tagged with light-level geolocator tags. 
 
 #### Required data properties
 *State here the required and/or optimal data properties for this App to perform properly.*
 
 *Examples:*
 
-This App is only applicable to data that reflect range resident behavior. 
+This App is only applicable to data that contain light-level data with date-time stamps. 
 
-The data should have a fix rate of at least 1 location per 30 minutes. 
-
-The App should work for any kind of (location) data.
 
 ### Input type
 *Indicate which type of input data the App requires.*
@@ -51,30 +127,44 @@ The App should work for any kind of (location) data.
 *Example:* `rest_overview.csv`: csv-file with Table of all rest site properties
 
 ### Settings 
-*Please list and define all settings that the App requires to be set by the App user, if necessary including their unit. Please state each of the settings that the user will encounter in the UI of the shiny app.*
 
-*Example:* `Radius of resting site` (radius): Defined radius the animal has to stay in for a given duration of time for it to be considered resting site. Unit: `metres`.
+`Step 2. Calibration period information: latitude`: decimal degrees for the calibration period site. The default value is 0. The arrow buttons steps up latitude and longitude in 0.00001 decimal degree increments.
 
-*Always include the "Store settings" setting as it will appear automatically in all shiny apps*
+`Step 2. Calibration period information: longitude`: decimal degrees for the calibration period site. The default value is 0. The arrow buttons steps up latitude and longitude in 0.00001 decimal degree increments.
+
+`Step 2. Calibration period information: start date`: Date can be selected from a calendar when you click on either date box, or entered in format YYYY-MM-DD for the calibration period site
+
+`Step 2. Calibration period information: end date`: Date can be selected from a calendar when you click on either date box, or entered in format YYYY-MM-DD for the calibration period site
+
+`Step 2. Calibration period information: sun angle` (degrees): calculate or input this value for the calibration period. The default value is 0. The sun angle can also be calculated by clicking the button "Calculate sun angle from data" and in that case, the sun angle will appear in that same box. If you are unsure what your calibration period location or dates are, please read <a href="https://doi.org/10.1111/1365-2656.13036">section 4.2 in Lisovski et al. 2020 "Light‐level geolocator analyses: A user's guide"</a>.
+
+`Step 3. Light threshold entry` (light level value, numeric): the default light threshold is 5.5 and can be changed in increments of 0.1 with the arrows on the right side of the box.
+
+`Step 4. Optional: change value for finding problem areas` (light level value, numeric): TAGS is designed to highlight potential false twilights (from shade, artificial lighting, etc).  This value is how TAGS chooses potential problem twilights to highlight visually in red in Step 5.  Thus, the problem threshold value should reflect what you view as the smallest possible time you might go from light to dark or vice versa naturally.  The default value 5 hours. The steps are in increments of 1 hour, and the values allowed are 0 hrs to 24 hrs.  Five hours is usually suitable for most regions.  Changing the value will **not** erase your previous selections for excluded points, so you can experiment if you wish to highlight further potential problems without losing existing edits.
+ 
+`Step 5. Find problem areas and edit your data: unit` (days or hours): Default unit is days, but can be changed with the radio button to hours.
+
+`Step 5. Find problem areas and edit your data: Editing window length` (days or hours): defaults to two days shown in the plot.
+
+`Step 5. Find problem areas and edit your data: What overlap with previous window` (days or hours): defaults to 1 hour (172800 seconds), which is 0.04 day.
+
+`Step 5. Find problem areas and edit your data: What overlap with previous window` (days or hours): defaults to 1 hour (172800 seconds), which is 0.04 day.
+
 `Store settings`: click to store the current settings of the App for future Workflow runs. 
 
 ### Changes in output data
 *Specify here how and if the App modifies the input data. Describe clearly what e.g. each additional column means.*
 
-*Examples:*
 
-The App adds to the input data the columns `Max_dist` and `Avg_dist`. They contain the maximum distance to the provided focal location and the average distance to it over all locations. 
+The App adds to the input data the column `Included`.  It contains a TRUE/FALSE value for whether a given light-level point should be used in future analyses.
 
-The App filterers the input data as selected by the user. 
-
-The output data is the outcome of the model applied to the input data. 
-
-The input data remains unchanged.
 
 ### Most common errors
 *Please describe shortly what most common errors of the App can be, how they occur and best ways of solving them.*
 
+`Sun angle`:** If no sun angle is given, the map usually cannot calculate and will crash the app. 
+
 ### Null or error handling
 *Please indicate for each setting as well as the input data which behaviour the App is supposed to show in case of errors or NULL values/input. Please also add notes of possible errors that can happen if settings/parameters are improperly set and any other important information that you find the user should be aware of.*
 
-*Example:* **Setting `radius`:** If no radius AND no duration are given, the input data set is returned with a warning. If no radius is given (NULL), but a duration is defined then a default radius of 1000m = 1km is set. 
+**Setting `Sun angle`:** If no sun angle is given, the map usually cannot calculate and will crash the app. 
