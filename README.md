@@ -104,27 +104,22 @@ To contribute to TAGS, please create a fork, demonstrate that your changes do no
 This App was developed using data of birds with solar light-level geolocators.  It can be used to clean data from any animals tagged with light-level geolocator tags. 
 
 #### Required data properties
-*State here the required and/or optimal data properties for this App to perform properly.*
-
-*Examples:*
 
 This App is only applicable to data that contain light-level data with date-time stamps. 
 
 
 ### Input type
-*Indicate which type of input data the App requires.*
-
-*Example*: `move2::move2_loc`
+`move2::geolocator_raw_moveapps`
 
 ### Output type
-*Indicate which type of output data the App produces to be passed on to subsequent Apps.*
-
-*Example:* `move2::move2_loc`
+`move2::geolocator_raw_moveapps`
 
 ### Artefacts
-*If the App creates artefacts (e.g. csv, pdf, jpeg, shapefiles, etc), please list them here and describe each.*
 
-*Example:* `rest_overview.csv`: csv-file with Table of all rest site properties
+`TAGS_format_data-[input$filename][Sys.Date()].csv`: csv-file with TAGS format data. Get to TAGS format by including interpolations. From FLightR documentation: "The fields excluded and interp may have values of TRUE only for twilight > 0."  but this does not make sense when we exclude data points, not twilights.
+
+`twilights_data-[input$filename][Sys.Date()].csv`: csv-file with edited twilights format data.  This is not the MoveApps format, I think?
+
 
 ### Settings 
 
