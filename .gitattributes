@@ -36,9 +36,13 @@ bigfiles/** filter=lfs diff=lfs merge=lfs -text
 
 # Graphics
 *.png binary
+*.PNG binary
 *.jpg binary
+*.JPG binary
 *.jpeg binary
+*.JPEG binary
 *.gif binary
+*.GIF binary
 *.tif binary
 *.tiff binary
 *.ico binary
